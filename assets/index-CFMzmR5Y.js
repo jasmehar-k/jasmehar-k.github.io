@@ -358,8 +358,8 @@ Error generating stack: `+n.message+`
 `,j4=W.img`
     position: absolute;
     bottom: 0;
-    right: 10;
-    width: 200px;
+    right: 12;
+    width: 150px;
     animation: ${T4} 10s ease-in-out infinite alternate;
     @media (max-width: 1110px) {
         display: none;
@@ -367,10 +367,10 @@ Error generating stack: `+n.message+`
 `,R4=W.img`
     position: absolute;
     bottom: 100px;
-    width: 100px;
-      @media (max-width: 768px) {
-    width: 150px;
-  }
+    width: 400px;
+    @media (max-width: 768px) {
+        width: 150px;
+    }
 
   @media (max-width: 1110px) {
     display: none;
@@ -398,7 +398,7 @@ Error generating stack: `+n.message+`
     transform: translateY(2px);
     box-shadow: inset -2px -2px 0px rgba(0,0,0,0.3);
   }
-`,D4=()=>S.jsxs(O4,{children:[S.jsx(Xm,{src:Vf,style:{top:"30px",left:"-500px",animationDuration:"100s",animationDelay:"25s"}}),S.jsx(Xm,{src:Vf,style:{top:"120px",left:"100px",animationDuration:"70s"}}),S.jsx(M4,{src:Vf,style:{top:"90px",left:"100px",animationDuration:"60s"}}),S.jsx(_4,{children:S.jsx(z4,{children:"HI! I'M JASMEHAR"})}),S.jsxs(w4,{children:[S.jsx(Mu,{to:"skills",smooth:!0,duration:500,color:"#fbbc04",children:"SKILLS"}),S.jsx(Mu,{to:"experience",smooth:!0,duration:500,color:"#ea4335",children:"EXPERIENCE"}),S.jsx(Mu,{to:"projects",smooth:!0,duration:500,color:"#5fbb5a",children:"PROJECTS"})]}),S.jsx(Mu,{to:"about",smooth:!0,duration:500,color:"#727678",marginTop:"2rem",children:"↓ About Me"}),S.jsx(j4,{src:p4,style:{right:"50px",bottom:"370px",width:"250px"}}),S.jsx(R4,{src:g4,style:{right:"-100px",bottom:"100px",width:"400px"}})]}),C4="/assets/my_photo-BgyfeEwi.png",N4=W.section`
+`,D4=()=>S.jsxs(O4,{children:[S.jsx(Xm,{src:Vf,style:{top:"30px",left:"-500px",animationDuration:"100s",animationDelay:"25s"}}),S.jsx(Xm,{src:Vf,style:{top:"120px",left:"100px",animationDuration:"70s"}}),S.jsx(M4,{src:Vf,style:{top:"90px",left:"100px",animationDuration:"60s"}}),S.jsx(_4,{children:S.jsx(z4,{children:"HI! I'M JASMEHAR"})}),S.jsxs(w4,{children:[S.jsx(Mu,{to:"skills",smooth:!0,duration:500,color:"#fbbc04",children:"SKILLS"}),S.jsx(Mu,{to:"experience",smooth:!0,duration:500,color:"#ea4335",children:"EXPERIENCE"}),S.jsx(Mu,{to:"projects",smooth:!0,duration:500,color:"#5fbb5a",children:"PROJECTS"})]}),S.jsx(Mu,{to:"about",smooth:!0,duration:500,color:"#727678",marginTop:"2rem",children:"↓ About Me"}),S.jsx(j4,{src:p4,style:{right:"50px",bottom:"370px",width:"250px"}}),S.jsx(R4,{src:g4,style:{right:"-115px",bottom:"100px",width:"415px"}})]}),C4="/assets/my_photo-BgyfeEwi.png",N4=W.section`
   background-color: #3b9aff;
   padding: 5rem 2rem;
   font-family: 'Press Start 2P', cursive;
@@ -692,7 +692,7 @@ Error generating stack: `+n.message+`
   opacity: ${({$animate:a})=>a?1:0};
   top: ${({$top:a})=>`${a}px`};
   z-index: 10;
-`,M6=[{title:"Full-Stack and Machine Learning Developer Intern",company:"Nokia",duration:"April 2025 – Aug 2025",description:[],align:"left"},{title:"Software Developer Intern",company:"Trexo Robotics",duration:"July 2022 – Sep 2022",description:["Designed and developed 3 production-deployed web apps to streamline database changes","Saved the Customer Success team significant hours originally spent on manual edits","Enhanced efficiency by automating manual processes involving multiple Postman requests","Mitigated errors by providing a controlled interface for database changes","Improved data traceability through logging mechanisms"],align:"right"},{title:"Head of Strategy and Scouting",company:"Absolute Robotics",duration:"2022 – 2024",description:["Led the team’s strategy development and robot design process","Taught new members about app development, robot mechanics, and strategy development","Designed and built a user-friendly mobile app to collect data and track teams’ performances","Developed a web-based app to collect and analyze scouting data through QR code scanning","Implemented data processing for scoring and strategy analysis"],align:"left"}],j6=()=>{const a=Gt.useRef(null),[i,c]=Gt.useState(!1),[u,f]=Gt.useState(160),s=Gt.useRef();return Gt.useEffect(()=>{const h=()=>{if(!a.current)return;const v=a.current.offsetTop,g=a.current.offsetHeight;if(window.scrollY>=v){c(!0);const m=window.scrollY-v+180,y=g-108,A=Math.min(m,y);f(A)}else c(!0),f(180)};return window.addEventListener("scroll",h),h(),()=>window.removeEventListener("scroll",h)},[]),S.jsxs(p6,{id:"experience",ref:a,children:[S.jsx(g6,{children:"Experience"}),S.jsx(y6,{src:h6,alt:"flag"}),S.jsx(v6,{}),S.jsx(w6,{src:m6,ref:s,$animate:i,$top:u}),M6.map((h,v)=>S.jsxs(b6,{align:h.align,children:[S.jsx(S6,{align:h.align}),S.jsxs(x6,{children:[S.jsx(A6,{children:h.title}),S.jsx(E6,{children:h.company}),S.jsx(T6,{children:h.duration}),S.jsx(O6,{}),S.jsx(_6,{children:h.description.map((g,m)=>S.jsx(z6,{children:g},m))})]})]},v))]})};/*!
+`,M6=[{title:"Full-Stack and Machine Learning Developer Intern",company:"Nokia",duration:"April 2025 – Aug 2025",description:[],align:"left"},{title:"Software Developer Intern",company:"Trexo Robotics",duration:"July 2022 – Sep 2022",description:["Designed and developed 3 production-deployed web apps to streamline database changes","Saved the Customer Success team significant hours originally spent on manual edits","Enhanced efficiency by automating manual processes involving multiple Postman requests","Mitigated errors by providing a controlled interface for database changes","Improved data traceability through logging mechanisms"],align:"right"},{title:"Head of Strategy and Scouting",company:"Absolute Robotics",duration:"2022 – 2024",description:["Led the team’s strategy development and robot design process","Taught new members about app development, robot mechanics, and strategy development","Designed and built a user-friendly mobile app to collect data and track teams’ performances","Developed a web-based app to collect and analyze scouting data through QR code scanning","Implemented data processing for scoring and strategy analysis"],align:"left"}],j6=()=>{const a=Gt.useRef(null),[i,c]=Gt.useState(!1),[u,f]=Gt.useState(160),s=Gt.useRef();return Gt.useEffect(()=>{const h=()=>{if(!a.current)return;const v=a.current.offsetTop,g=a.current.offsetHeight;if(window.scrollY>=v){c(!0);const m=window.scrollY-v+180,y=g-90,A=Math.min(m,y);f(A)}else c(!0),f(180)};return window.addEventListener("scroll",h),h(),()=>window.removeEventListener("scroll",h)},[]),S.jsxs(p6,{id:"experience",ref:a,children:[S.jsx(g6,{children:"Experience"}),S.jsx(y6,{src:h6,alt:"flag"}),S.jsx(v6,{}),S.jsx(w6,{src:m6,ref:s,$animate:i,$top:u}),M6.map((h,v)=>S.jsxs(b6,{align:h.align,children:[S.jsx(S6,{align:h.align}),S.jsxs(x6,{children:[S.jsx(A6,{children:h.title}),S.jsx(E6,{children:h.company}),S.jsx(T6,{children:h.duration}),S.jsx(O6,{}),S.jsx(_6,{children:h.description.map((g,m)=>S.jsx(z6,{children:g},m))})]})]},v))]})};/*!
  * Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  * Copyright 2024 Fonticons, Inc.
