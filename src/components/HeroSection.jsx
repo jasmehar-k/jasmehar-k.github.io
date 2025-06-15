@@ -558,8 +558,8 @@ const CloudCenterToRight = styled.img`
 const PiranhaPlant = styled.img`
     position: absolute;
     bottom: 0;
-    right: 10;
-    width: 200px;
+    right: 12;
+    width: 150px;
     animation: ${riseFromBottom} 10s ease-in-out infinite alternate;
     @media (max-width: 1110px) {
         display: none;
@@ -569,10 +569,10 @@ const PiranhaPlant = styled.img`
 const ShortPipe = styled.img`
     position: absolute;
     bottom: 100px;
-    width: 100px;
-      @media (max-width: 768px) {
-    width: 150px;
-  }
+    width: 400px;
+    @media (max-width: 768px) {
+        width: 150px;
+    }
 
   @media (max-width: 1110px) {
     display: none;
@@ -652,7 +652,7 @@ const HeroSection = () => {
             <ScrollButton to="about" smooth={true} duration={500} color="#727678" marginTop="2rem">↓ About Me</ScrollButton>
 
             <PiranhaPlant src={piranha_plant} style={{ right: '50px', bottom: '370px', width: '250px' }} />
-            <ShortPipe src={short_pipe} style={{ right: '-100px', bottom: '100px', width: '400px' }} />
+            <ShortPipe src={short_pipe} style={{ right: '-115px', bottom: '100px', width: '415px' }} />
     </HeroContainer>
   );
 };

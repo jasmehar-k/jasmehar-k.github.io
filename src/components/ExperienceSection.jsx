@@ -188,7 +188,7 @@ const ExperienceTimeline = () => {
             const relativeScroll = window.scrollY - sectionTop + 180; // 160 = 10rem offset
       
             // Clamp Mario's top so he stays within the section
-            const maxTop = sectionHeight - 108; // 60 = Mario's height approx
+            const maxTop = sectionHeight - 90; // 60 = Mario's height approx
             const newMarioTop = Math.min(relativeScroll, maxTop);
       
             setMarioTop(newMarioTop);
