@@ -302,7 +302,7 @@
 // export default HeroSection;
 
 
-import React from 'react';
+import React,  { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-scroll';
 
@@ -376,10 +376,10 @@ const driftFromCenterToRight = keyframes`
 
 const riseFromBottom = keyframes`
     0% {
-        bottom: 110px;
+        bottom: 20px;
     }
     100% {
-        bottom: 190;
+        bottom: 250px;
     }
 `;
 
@@ -389,7 +389,7 @@ const HeroContainer = styled.div`
     background-image: url(${bg});
     background-size: cover;
     background-color: #5dc3ff;
-    width: 100vw;
+    //width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -561,7 +561,7 @@ const CloudCenterToRight = styled.img`
 
 const PiranhaPlant = styled.img`
     position: absolute;
-    bottom: 0;
+    bottom: 300px;
     right: 12;
     width: 150px;
     animation: ${riseFromBottom} 10s ease-in-out infinite alternate;
@@ -572,11 +572,13 @@ const PiranhaPlant = styled.img`
 
 const ShortPipe = styled.img`
     position: absolute;
-    bottom: 100px;
-    width: 400px;
-    @media (max-width: 768px) {
-        width: 150px;
-    }
+    // bottom: 100px;
+      bottom: 0px;
+
+    // width: 400px;
+    // @media (max-width: 768px) {
+    //     width: 150px;
+    // }
 
   @media (max-width: 1110px) {
     display: none;
@@ -640,6 +642,21 @@ const ScrollButton = styled(Link)`
 
 
 const HeroSection = () => {
+    const [bottomOffset, setBottomOffset] = useState(100);
+
+    useEffect(() => {
+        const updateOffset = () => {
+          const height = window.innerHeight;
+          const offset = height - 700; 
+          console.log(offset);
+          setBottomOffset(offset);
+        };
+    
+        updateOffset();
+        window.addEventListener('resize', updateOffset);
+        return () => window.removeEventListener('resize', updateOffset);
+      }, []);
+    
   return (
     <HeroContainer>
         <CloudLeftToRight src={cloud} style={{ top: '30px', left: '-500px', animationDuration: '100s',animationDelay: '25s'}} />
@@ -659,8 +676,8 @@ const HeroSection = () => {
         </ButtonGroup>
             <ScrollButton to="about" smooth={true} duration={500} color="#727678" marginTop="2rem">↓ About Me</ScrollButton>
 
-            <PiranhaPlant src={piranha_plant} style={{ right: '50px', bottom: '370px', width: '250px' }} />
-            <ShortPipe src={short_pipe} style={{ right: '-115px', bottom: '100px', width: '415px' }} />
+            <PiranhaPlant src={piranha_plant} style={{ right: '50px', width: '250px' }} />
+            <ShortPipe src={short_pipe} style={{ right: '-115px', width: '415px' }} />
     </HeroContainer>
   );
 };
