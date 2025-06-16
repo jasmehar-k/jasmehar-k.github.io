@@ -134,22 +134,22 @@ const certifications = [
     {
       title: 'Building AI Agents with LangGraph',
       org: 'O\'reilly',
-      blurb: 'Learned how to build stateful, multi-agent LLM applications using LangGraph and LangChain.'
+      blurb: 'Learned how to structure multi-step, stateful AI workflows using LangGraph to build  agentic applications.'
     },
     {
       title: 'Introduction to LangGraph',
       org: 'LangChain',
-      blurb: 'Studied prompting techniques for GPT-based applications like summarization, generation, and classification.'
+      blurb: 'Gained hands-on experience building graph-based AI agents using LangChain\'s LangGraph framework, understanding how to manage control flow in complex chains.'
     },
     {
         title:'Docker Foundations Professional Certificate',
         org: 'Linkedin Learning',
-        blurb: 'Learned Docker fundamentals, including images, containers, and orchestration with Kubernetes.'
+        blurb: 'Developed a strong foundation in containerization, learning how to build, manage, and deploy applications efficiently using Docker.'
     },
     {
       title: 'Artificial Intelligence Fundamentals',
       org: 'IBM',
-      blurb: 'Covered supervised learning, neural networks, and gradient descent with practical exercises in Octave/MATLAB.'
+      blurb: 'Built a solid understanding of core AI concepts including machine learning, neural networks, and ethical considerations in AI development.'
     }
   ];
 
@@ -191,7 +191,6 @@ const SkillsSection = () => {
           <SkillCard><IconWrapper><FaDocker /></IconWrapper><SkillName>Docker</SkillName></SkillCard>
           <SkillCard><IconWrapper><SiPostman /></IconWrapper><SkillName>Postman</SkillName></SkillCard>
           <SkillCard><IconWrapper><FaDatabase /></IconWrapper><SkillName>SQL</SkillName></SkillCard>
-          <SkillCard><IconWrapper><SiMongodb /></IconWrapper><SkillName>MongoDB</SkillName></SkillCard>
         </SkillsGrid>
       </Category>
 

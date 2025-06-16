@@ -7,6 +7,7 @@ import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import mario from '../assets/mario_run.gif';
 import castle from '../assets/castle.png';
 import ground from '../assets/ground.png';
+import webring from '../assets/webring.png';
 
 const walk = keyframes`
   0% {
@@ -20,15 +21,15 @@ const walk = keyframes`
 const SceneWrapper = styled.section`
   width: 100%;
   background-color: #3b9aff;
-  position: relative;
+  position: absolute;
   overflow: visible;
-  border-top: 4px solid #2f2f2f;
-  min-height: 600px;
-  padding-bottom: 160px;
+  // border-top: 4px solid #2f2f2f;
+  min-height: 80%;
+  // padding-bottom: 160px;
 `;
 const LeftContentColumn = styled.div`
   position: absolute;
-  top: 300px;
+  bottom: 300px;
   left: 0;
   width: calc(100% - 500px); /* assuming castle is ~250–300px wide */
   padding-left: 1rem;
@@ -171,8 +172,8 @@ const MarioEndScene = () => {
     <SceneWrapper ref={sectionRef}>
     <LeftContentColumn>
       <FinalMessage>
-        Thanks for reaching the end! <br />
-        You can reach out to me at jasmehar.kr@gmail.com <br />
+        Thanks for visiting my portfolio! <br />
+        Feel free to reach out to me at jasmehar.kr@gmail.com <br />
       </FinalMessage>
       <IconButtonRow>
         <IconButton
@@ -200,6 +201,14 @@ const MarioEndScene = () => {
           <FontAwesomeIcon icon={faLinkedin} />
         </IconButton>
       </IconButtonRow>
+      <IconButton 
+        href="https://se-webring.xyz/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="SE Webring"
+      >
+        <img src={webring} alt="SE Webring" style={{ width: '25px', height: 'auto', marginTop: '1.5rem'}} />
+      </IconButton>
     </LeftContentColumn>
   
     <Mario src={mario} alt="Mario walking" animate={animate} />
