@@ -49,6 +49,8 @@ import intersection from '../assets/intersection.png';
 import braillinator from '../assets/braillinator.png'; 
 import portfolio from '../assets/portfolio.png'; 
 import prediction from '../assets/prediction.png';
+import { FaGithub } from 'react-icons/fa';
+
 
 const ProjectsContainer = styled.section`
   background-color: #cceeff;
@@ -76,7 +78,7 @@ const ProjectCard = styled.div`
   background-color: #fff;
   border: 4px solid #2f2f2f;
   width: 300px;
-  padding: 1rem;
+  padding: 2rem 1rem 1rem 1rem; 
   position: relative;
   transition: transform 0.3s ease;
   box-shadow: 8px 8px 0 #2f2f2f;
@@ -115,7 +117,6 @@ const SkillTag = styled.span`
 `;
 
 const ImageWrapper = styled.div`
-  height: 150px;
   overflow: hidden;
   margin-bottom: 1rem;
 
@@ -129,6 +130,19 @@ const ImageWrapper = styled.div`
 const Description = styled.p`
   font-size: 0.6rem;
   color: #2f2f2f;
+`;
+const GitHubIcon = styled.a`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #2f2f2f;
+  font-size: 1rem;
+  z-index: 1;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #000;
+  }
 `;
 
 const LevelBadge = styled.span`
@@ -149,6 +163,9 @@ const ProjectsSection = () => {
       <Title>Projects</Title>
       <ProjectGrid>
         <ProjectCard>
+            <GitHubIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
+                <FaGithub />
+            </GitHubIcon>
             <ProjectName>Braillinator</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
@@ -163,9 +180,12 @@ const ProjectsSection = () => {
                 <Description>
                 Real-time text-to-Braille system that uses a mobile app and Raspberry Pi to convert captured images into tactile Braille.
                 </Description>
-                </ProjectCard>
+        </ProjectCard>
 
                 <ProjectCard>
+                    <GitHubIcon href="https://github.com/jasmehar-k/breast-cancer-prediction" target="_blank" rel="noopener noreferrer">
+                        <FaGithub />
+                    </GitHubIcon>
                 <ProjectName>Breast Cancer Prediction Model</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
@@ -180,6 +200,9 @@ const ProjectsSection = () => {
                 Neural network built in PyTorch classified breast cancer tumors with 96% accuracy, optimized using binary cross-entropy loss and the Adam optimizer.                </Description>
         </ProjectCard>
         <ProjectCard>
+            <GitHubIcon href="https://github.com/jasmehar-k/traffic-simulation" target="_blank" rel="noopener noreferrer">
+                <FaGithub />
+            </GitHubIcon>
                 <ProjectName>Road Traffic Simulation</ProjectName>
                 <SkillTags>
                     <SkillTag>Java</SkillTag>
@@ -207,9 +230,12 @@ const ProjectsSection = () => {
                     <img src={recipeFinder} alt="Recipe Finder" />
                 </ImageWrapper>
                 <Description>
-                Web app that finds recipes based on user input by scraping and filtering online sources for relevant ingredient and instruction data. </Description>
+                    Web app that finds recipes based on user input by scraping and filtering online sources for relevant ingredient and instruction data. </Description>
         </ProjectCard>
         <ProjectCard>
+            <GitHubIcon href="https://github.com/jasmehar-k/jasmehar-k.github.io" target="_blank" rel="noopener noreferrer">
+                <FaGithub />
+            </GitHubIcon>
                 <ProjectName>Portfolio Website (this site!)</ProjectName>
                 <SkillTags>
                     <SkillTag>React.js</SkillTag>

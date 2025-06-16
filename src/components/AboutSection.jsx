@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import myPhoto from '../assets/my_photo.png'; 
+import myPhoto from '../assets/photo.png'; 
 
 const AboutWrapper = styled.section`
   background-color: #3b9aff;
@@ -33,7 +33,7 @@ const PhotoWrapper = styled.div`
   background-color: #fff;
   background-image: url(${myPhoto});
   background-size: cover;
-  background-position: center;
+  background-position: center 80%;
   border-radius: 12px;
   box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.2);
   image-rendering: pixelated;
