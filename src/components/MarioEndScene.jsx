@@ -81,6 +81,10 @@ const IconButton = styled.a`
     transform: scale(1.3);
     color: #ffd700;
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 

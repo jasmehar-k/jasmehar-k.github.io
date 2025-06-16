@@ -64,6 +64,10 @@ const SkillCard = styled.div`
   &:hover {
     transform: scale(1.05);
   }
+      @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 const IconWrapper = styled.div`
@@ -104,6 +108,10 @@ const CertCard = styled.div`
     transform: translateY(-4px);
     box-shadow: 6px 6px 0 #000;
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 const CertTitle = styled.h3`

@@ -84,6 +84,10 @@ const ProjectCard = styled.div`
   &:hover {
     transform: scale(1.05);
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 const ProjectName = styled.h3`
   font-size: 0.75rem;

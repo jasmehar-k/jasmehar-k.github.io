@@ -60,6 +60,10 @@ const PixelButton = styled.a`
     transform: translateY(2px);
     box-shadow: 2px 2px 0 #000;
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 // const ScrollLink = styled(Link).attrs({
@@ -116,6 +120,10 @@ const IconButton = styled.a`
     transform: translateY(2px);
     box-shadow: 2px 2px 0 #000;
   }
+      @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 const ScrollLink = styled(Link).attrs({
@@ -148,6 +156,10 @@ const ScrollLink = styled(Link).attrs({
     transform: translateY(2px);
     box-shadow: inset -2px -2px 0px rgba(0,0,0,0.3);
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 const Navbar = () => {

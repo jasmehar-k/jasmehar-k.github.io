@@ -27,6 +27,10 @@ const Timeline = styled.div`
   transform: translateX(-50%);
   width: 8px;
   background-color: #2f2f2f;
+  @media (max-width: 600px) {
+    display: none;
+  }
+
 `;
 
 const Flag = styled.img`
@@ -35,6 +39,10 @@ const Flag = styled.img`
   left: calc(50%);
   width: 150px;
   image-rendering: pixelated;
+  @media (max-width: 600px) {
+    display: none;
+  }
+
 `;
 
 const ExperienceItem = styled.div`
@@ -58,6 +66,10 @@ const ExperienceItem = styled.div`
   &:hover {
     transform: scale(1.05);
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 const Connector = styled.div`
@@ -69,6 +81,10 @@ const Connector = styled.div`
   border: 4px solid #2f2f2f;
   border-radius: 50%;
   left: ${({ align }) => (align === 'left' ? 'calc(100% - 10px)' : '-10px')};
+  @media (max-width: 600px) {
+    display: none;
+  }
+
 `;
 
 const Card = styled.div`
@@ -126,6 +142,9 @@ const MarioSlide = styled.img`
   opacity: ${({ $animate }) => ($animate ? 1 : 0)};
   top: ${({ $top }) => `${$top}px`};
   z-index: 10;
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
 
 

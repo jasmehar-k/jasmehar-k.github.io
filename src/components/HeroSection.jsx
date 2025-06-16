@@ -487,6 +487,10 @@ const PixelButton = styled.button`
   &:hover {
     filter: brightness(1.1);
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 `;
 
 const HUD = styled.div`
@@ -622,6 +626,10 @@ const ScrollButton = styled(Link)`
   &:hover {
     filter: brightness(1.1);
   }
+  @media (max-width: 600px) {
+    &:hover {
+      transform: none; /* Disable transform on hover for small screens */
+    }
 
   &:active {
     transform: translateY(2px);
