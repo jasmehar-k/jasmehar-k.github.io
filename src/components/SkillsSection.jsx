@@ -144,13 +144,18 @@ const certifications = [
     {
         title:'Docker Foundations Professional Certificate',
         org: 'Linkedin Learning',
-        blurb: 'Developed a strong foundation in containerization, learning how to build, manage, and deploy applications efficiently using Docker.'
+        blurb: 'Learned how to simplify application deployment using Docker by building and managing containers with Dockerfiles, working with images and registries, and using Docker Compose to efficiently configure and run multi-service applications in local development environments.'
+    },
+    {
+        title: 'Learning Kubernetes',
+        org: 'Linkedin Learning',
+        blurb: 'Gained hands-on experience with Kubernetes by learning how to create clusters with Minikube, deploying and managing containerized applications, writing YAML manifests, and applying core cloud-native and security concepts.'
     },
     {
       title: 'Artificial Intelligence Fundamentals',
       org: 'IBM',
       blurb: 'Built a solid understanding of core AI concepts including machine learning, neural networks, and ethical considerations in AI development.'
-    }
+    },
   ];
 
 const SkillsSection = () => {
