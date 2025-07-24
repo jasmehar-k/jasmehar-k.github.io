@@ -2,9 +2,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FaPython, FaProjectDiagram, FaJs, FaReact, FaGitAlt, FaDocker, FaDatabase, FaBrain, FaLaptopCode, FaCode } from 'react-icons/fa';
-import { SiTypescript, SiCplusplus, SiHtml5, SiCss3, SiMongodb, SiPostman, SiTensorflow, SiVite, SiPytorch} from 'react-icons/si';
+import { SiTypescript, SiCplusplus, SiHtml5, SiCss3, SiMongodb, SiPostman, SiTensorflow, SiVite, SiPytorch, SiFastapi, SiNodedotjs, SiTailwindcss, SiLangchain, SiAwselasticloadbalancing, SiGnubash, SiC, SiAwsamplify, SiAwssecretsmanager, SiAmazonwebservices} from 'react-icons/si';
 import { Icon } from '@iconify/react';
 import block from '../assets/yellow_block.png'; 
+import AWSIcon from 'react-aws-icons/dist/aws/logo/AWS';
+
 
 const SkillsWrapper = styled.section`
   background-color: #3b9aff;
@@ -174,8 +176,12 @@ const SkillsSection = () => {
         <SkillsGrid>
             <SkillCard><IconWrapper><FaPython /></IconWrapper><SkillName>Python</SkillName></SkillCard>
             <SkillCard><IconWrapper><SiCplusplus/></IconWrapper><SkillName>C++</SkillName></SkillCard>
+            <SkillCard><IconWrapper><SiC/></IconWrapper><SkillName>C</SkillName></SkillCard>
             <SkillCard><IconWrapper><FaJs /></IconWrapper><SkillName>JavaScript</SkillName></SkillCard>
+            <SkillCard><IconWrapper><FaDatabase /></IconWrapper><SkillName>SQL</SkillName></SkillCard>
             <SkillCard><IconWrapper><SiHtml5 /></IconWrapper><SkillName>HTML5</SkillName></SkillCard>
+            <SkillCard><IconWrapper><SiCss3 /></IconWrapper><SkillName>CSS3</SkillName></SkillCard>
+            <SkillCard><IconWrapper><SiTypescript /></IconWrapper><SkillName>TypeScript</SkillName></SkillCard>
         </SkillsGrid>
       </Category>
 
@@ -186,19 +192,28 @@ const SkillsSection = () => {
             <SkillCard><IconWrapper><SiPytorch /></IconWrapper><SkillName>PyTorch</SkillName></SkillCard>
           <SkillCard><IconWrapper><FaReact /></IconWrapper><SkillName>React</SkillName></SkillCard>
           <SkillCard><IconWrapper><SiVite /></IconWrapper><SkillName>Vite</SkillName></SkillCard>
+          <SkillCard><IconWrapper><FaCode /></IconWrapper><SkillName>Flask</SkillName></SkillCard>
+          <SkillCard><IconWrapper><SiFastapi /></IconWrapper><SkillName>FastAPI</SkillName></SkillCard>
+          <SkillCard><IconWrapper><SiNodedotjs /></IconWrapper><SkillName>Node.js</SkillName></SkillCard>
+          <SkillCard><IconWrapper><SiTailwindcss /></IconWrapper><SkillName>TailwindCSS</SkillName></SkillCard>
+          <SkillCard><IconWrapper><SiLangchain /></IconWrapper><SkillName>Langchain</SkillName></SkillCard>
+          <SkillCard><IconWrapper><FaDocker /></IconWrapper><SkillName>Docker</SkillName></SkillCard>
+        
+
         </SkillsGrid>
       </Category>
 
       <Category>
-        <CategoryTitle>Tools</CategoryTitle>
+        <CategoryTitle>Tools/Infrastructures</CategoryTitle>
         <SkillsGrid>
           <SkillCard><IconWrapper><FaGitAlt /></IconWrapper><SkillName>Git</SkillName></SkillCard>
-          <SkillCard><IconWrapper><FaDocker /></IconWrapper><SkillName>Docker</SkillName></SkillCard>
+          <SkillCard><IconWrapper><FaGitAlt /></IconWrapper><SkillName>GitHub</SkillName></SkillCard>
           <SkillCard><IconWrapper><SiPostman /></IconWrapper><SkillName>Postman</SkillName></SkillCard>
-          <SkillCard><IconWrapper><FaDatabase /></IconWrapper><SkillName>SQL</SkillName></SkillCard>
+          <SkillCard><IconWrapper><SiGnubash /></IconWrapper><SkillName>Bash</SkillName></SkillCard>
+          <SkillCard><IconWrapper><SiAmazonwebservices/></IconWrapper><SkillName>AWS</SkillName></SkillCard>
+
         </SkillsGrid>
       </Category>
-
       <CertSection id="certifications">
       <CategoryTitle>Certifications</CategoryTitle>
       <Grid>

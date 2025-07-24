@@ -46,10 +46,12 @@ import project1 from '../assets/project1.png';
 import project2 from '../assets/project2.png';
 import recipeFinder from '../assets/recipe_finder.png'; 
 import intersection from '../assets/intersection.png';
+import foot_print from '../assets/foot_print.png';
 import braillinator from '../assets/braillinator.png'; 
 import portfolio from '../assets/portfolio.png'; 
 import prediction from '../assets/prediction.png';
 import { FaGithub } from 'react-icons/fa';
+import { Icon } from '@iconify/react';
 
 
 const ProjectsContainer = styled.section`
@@ -162,6 +164,26 @@ const ProjectsSection = () => {
     <ProjectsContainer id="projects">
       <Title>Projects</Title>
       <ProjectGrid>
+      <ProjectCard>
+            <GitHubIcon href="https://devpost.com/software/foot-print" target="_blank" rel="noopener noreferrer">
+                <Icon icon="simple-icons:devpost"  />
+            </GitHubIcon>
+            <ProjectName>FOOT.print</ProjectName>
+                <SkillTags>
+                    <SkillTag>Python</SkillTag>
+                    <SkillTag>Gemini</SkillTag>
+                    <SkillTag>Twelve Labs</SkillTag>
+                    <SkillTag>YOLOv8</SkillTag>
+                    <SkillTag>Blender</SkillTag>
+
+                </SkillTags>
+                <ImageWrapper>
+                    <img src={foot_print} alt="FOOT.print" />
+                </ImageWrapper>
+                <Description>
+                AI pipeline that processes a video of a room to extract object positions, estimates depth and dimensions, and generates a validated, feng shui–optimized 3D room layout rendered in Blender.
+                </Description>
+        </ProjectCard>
         <ProjectCard>
             <GitHubIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
                 <FaGithub />
@@ -217,6 +239,9 @@ const ProjectsSection = () => {
                 Multi-threaded simulator for a 4-way intersection, optimizing traffic light durations with realistic driver behaviors modeled from real-world data.                </Description>
         </ProjectCard>
         <ProjectCard>
+            <GitHubIcon href="https://devpost.com/software/recipe-finder-xed0oz" target="_blank" rel="noopener noreferrer">
+                <Icon icon="simple-icons:devpost"  />
+            </GitHubIcon>
                 <ProjectName>Recipe Finder</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
