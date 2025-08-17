@@ -176,7 +176,7 @@ const Navbar = () => {
           <FaLinkedin />
         </IconButton>
         <IconButton
-          href="/Jasmehar_resume.pdf"
+          href="/Jasmehar_Kaur_resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Resume"

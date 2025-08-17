@@ -177,7 +177,7 @@ const MarioEndScene = () => {
       </FinalMessage>
       <IconButtonRow>
         <IconButton
-          href="/Jasmehar_resume.pdf"
+          href="/Jasmehar_Kaur_resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Resume"
