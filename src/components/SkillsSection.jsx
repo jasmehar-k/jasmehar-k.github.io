@@ -134,6 +134,11 @@ const CertBlurb = styled.p`
 
 const certifications = [
     {
+      title: 'AWS Fundamentals by Amazon Web Services',
+      org: 'Coursera',
+      blurb: 'Completed a 3 course series covering AWS core services, security, architecture, pricing, and support to build a strong foundation in cloud computing with AWS.'
+    },
+    {
       title: 'Building AI Agents with LangGraph',
       org: 'O\'reilly',
       blurb: 'Learned how to structure multi-step, stateful AI workflows using LangGraph to build  agentic applications.'
