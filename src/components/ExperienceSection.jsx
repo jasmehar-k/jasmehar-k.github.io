@@ -153,7 +153,14 @@ const ExperienceData = [
     title: 'Full-Stack and Machine Learning Developer Intern',
     company: 'Nokia',
     duration: 'April 2025 – Aug 2025',
-    description: [],
+    description: ['Built an LLM system to automate 5G alarm resolution',
+      ' Leveraged vector-based RAG for high-relevance retrieval.',
+      
+      'Engineered and optimized a hybrid (dense + sparse) RAG pipeline in OpenSearch with multi-pass retrieval, boosting precision by 65% and recall by 58%.',
+      
+      'Developed scalable backend services with FastAPI and integrated semantic, lexical, and hybrid search for high-performance data retrieval.',
+      
+      'Designed and Developed interactive React frontends with modular components and dynamic theming.'],
     align: 'left',
   },
   {

@@ -57,7 +57,7 @@ const AboutSection = () => {
       <Content>
         <PhotoWrapper />
         <Bio>
-          Hello! I'm Jasmehar, a passionate Software Engineering student at the University of Waterloo. I will soon be starting my second year and am set to graduate in May 2029.<br /><br />
+          Hello! I'm Jasmehar Kaur, a passionate Software Engineering student at the University of Waterloo. I will soon be starting my second year and am set to graduate in May 2029.<br /><br />
           My interests lie around the intersection of machine learning, software development, and real-world problem solving. I’ve built neural networks in PyTorch, worked on computer vision applications, and explored information retrieval systems using LangGraph and OpenSearch.<br /><br />
           I enjoy developing end-to-end solutions that blend intelligent systems with clean, maintainable code. I'm also an academic representative for my class, where I help bridge communication between students and faculty. I'm excited to keep learning and applying cutting-edge technology to create meaningful impact.
         </Bio>
