@@ -1,43 +1,3 @@
-// import React from 'react';
-// import styled from 'styled-components';
-// import bg from '../assets/about_bg.png'; 
-
-// const Section = styled.section`
-//   background-color: #3b9aff;
-//   background-size: cover;
-//   color: #333;
-//   padding: 100px 20px;
-//   font-family: 'Press Start 2P', cursive;
-//   text-align: center;
-// //   background-image: url(${bg});
-// `;
-
-// const Title = styled.h2`
-//   margin-top: 10rem;
-//   color: #d35400;
-//   margin-bottom: 2rem;
-// `;
-
-// const Text = styled.p`
-//   max-width: 600px;
-//   margin: 0 auto;
-//   line-height: 2;
-// `;
-
-// const ProjectsSection = () => {
-//   return (
-//     <Section id="projects">
-//       <Title>About Me</Title>
-//       <Text>
-//         I'm Jasmehar, a software engineer who loves building creative things —
-//         especially if they're playful, animated, or Mario-themed! I enjoy working
-//         with React, APIs, and anything that makes users smile.
-//       </Text>
-//     </Section>
-//   );
-// };
-
-// export default ProjectsSection;
 
 
 import React from 'react';
@@ -50,6 +10,8 @@ import foot_print from '../assets/foot_print.png';
 import braillinator from '../assets/braillinator.png'; 
 import portfolio from '../assets/portfolio.png'; 
 import prediction from '../assets/prediction.png';
+import iclick from '../assets/iclick.jpg';
+import breadboard from '../assets/breadboard.png';
 import { FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 
@@ -164,6 +126,42 @@ const ProjectsSection = () => {
     <ProjectsContainer id="projects">
       <Title>Projects</Title>
       <ProjectGrid>
+      <ProjectCard>
+          <GitHubIcon href="https://devpost.com/software/iclick-4rynjv" target="_blank" rel="noopener noreferrer">
+            <Icon icon="simple-icons:devpost"  />
+          </GitHubIcon>
+              <ProjectName>iClick</ProjectName>
+              <SkillTags>
+                  <SkillTag>Gradient Boosting Regression</SkillTag>
+                  <SkillTag>Supervised Learning</SkillTag>
+                  <SkillTag>Computer Vision</SkillTag>
+                  <SkillTag>Latency Optimization</SkillTag>
+              </SkillTags>
+              <ImageWrapper>
+                  <img src={iclick} alt="iClick" />
+              </ImageWrapper>
+              <Description>
+                System that enables hands-free computer control using precise cursor control through eye tracking, gesture recognition, and streaming speech-to-text. 
+              </Description>
+      </ProjectCard>
+      <ProjectCard>
+          <GitHubIcon href="https://devpost.com/software/circuit-build" target="_blank" rel="noopener noreferrer">
+            <Icon icon="simple-icons:devpost"  />
+          </GitHubIcon>
+              <ProjectName>BREAD.board</ProjectName>
+              <SkillTags>
+                <SkillTag>FastAPI</SkillTag>
+                <SkillTag>LiveKit</SkillTag>
+                <SkillTag>WebSockets</SkillTag>
+                <SkillTag>OpenAI</SkillTag>
+                <SkillTag>Computer Vision</SkillTag>
+              </SkillTags>
+              <ImageWrapper>
+                  <img src={breadboard} alt="BREAD.board" />
+              </ImageWrapper>
+              <Description>
+                Real-time circuit-building assistant that streams live video to analyze breadboard assembly, interpret schematics, and deliver step-by-step guidance and answer user questions.              </Description>
+      </ProjectCard>
       <ProjectCard>
             <GitHubIcon href="https://devpost.com/software/foot-print" target="_blank" rel="noopener noreferrer">
                 <Icon icon="simple-icons:devpost"  />
