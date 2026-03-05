@@ -35,7 +35,7 @@ const ProjectGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  justify-content: left;
+  justify-content: center;
 `;
 
 const ProjectCard = styled.div`
@@ -278,5 +278,4 @@ const ProjectsSection = () => {
 };
 
 export default ProjectsSection;
-
 
