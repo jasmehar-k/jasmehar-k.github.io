@@ -12,6 +12,7 @@ import portfolio from '../assets/portfolio.png';
 import prediction from '../assets/prediction.png';
 import iclick from '../assets/iclick.jpg';
 import breadboard from '../assets/breadboard.png';
+import dill_pkl from '../assets/dill_pkl.png';
 import { FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 
@@ -126,6 +127,25 @@ const ProjectsSection = () => {
     <ProjectsContainer id="projects">
       <Title>Projects</Title>
       <ProjectGrid>
+            <ProjectCard>
+          <GitHubIcon href="https://devpost.com/software/dill-pkl" target="_blank" rel="noopener noreferrer">
+            <Icon icon="simple-icons:devpost"  />
+          </GitHubIcon>
+              <ProjectName>dill.pkl</ProjectName>
+              <SkillTags>
+                  <SkillTag>Optuna</SkillTag>
+                  <SkillTag>FastAPI</SkillTag>
+                  <SkillTag>Python</SkillTag>
+                  <SkillTag>TypeScript</SkillTag>
+              </SkillTags>
+              <ImageWrapper>
+                  <img src={dill_pkl} alt="dill.pkl" />
+              </ImageWrapper>
+              <Description>
+              Agentic web app that automates the full ML pipeline (data analysis, preprocessing, feature
+engineering, model selection, training, and evaluation) and outputs a deployable model.
+                </Description>
+      </ProjectCard>
       <ProjectCard>
           <GitHubIcon href="https://devpost.com/software/iclick-4rynjv" target="_blank" rel="noopener noreferrer">
             <Icon icon="simple-icons:devpost"  />
