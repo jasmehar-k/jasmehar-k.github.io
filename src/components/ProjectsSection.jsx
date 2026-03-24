@@ -12,6 +12,7 @@ import portfolio from '../assets/portfolio.png';
 import prediction from '../assets/prediction.png';
 import iclick from '../assets/iclick.jpg';
 import breadboard from '../assets/breadboard.png';
+import visionCAD from '../assets/visionCAD.png';
 import dill_pkl from '../assets/dill_pkl.png';
 import { FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
@@ -163,6 +164,24 @@ engineering, model selection, training, and evaluation) and outputs a deployable
               <Description>
                 System that enables hands-free computer control using precise cursor control through eye tracking, gesture recognition, and streaming speech-to-text. 
               </Description>
+      </ProjectCard>
+      <ProjectCard>
+          <GitHubIcon href="https://devpost.com/software/visioncad" target="_blank" rel="noopener noreferrer">
+              <Icon icon="simple-icons:devpost" />
+          </GitHubIcon>
+          <ProjectName>VisionCAD</ProjectName>
+          <SkillTags>
+              <SkillTag>FastAPI</SkillTag>
+              <SkillTag>CADQuery</SkillTag>
+              <SkillTag>Python</SkillTag>
+              <SkillTag>Vue.js</SkillTag>
+          </SkillTags>
+          <ImageWrapper>
+              <img src={visionCAD} alt="VisionCAD" />
+          </ImageWrapper>
+          <Description>
+              Converts hand-drawn sketches into 3D CAD models by analyzing uploaded images with an LLM, extracting geometry, and generating a downloadable STEP file openable in SolidWorks or Onshape.
+          </Description>
       </ProjectCard>
       <ProjectCard>
           <GitHubIcon href="https://devpost.com/software/circuit-build" target="_blank" rel="noopener noreferrer">
