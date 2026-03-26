@@ -14,7 +14,7 @@ import iclick from '../assets/iclick.jpg';
 import breadboard from '../assets/breadboard.png';
 import visionCAD from '../assets/visionCAD.png';
 import dill_pkl from '../assets/dill_pkl.png';
-import { FaGithub } from 'react-icons/fa';
+import { FaAward, FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 
 
@@ -97,18 +97,70 @@ const Description = styled.p`
   font-size: 0.6rem;
   color: #2f2f2f;
 `;
-const GitHubIcon = styled.a`
+const LinkIcons = styled.div`
   position: absolute;
   top: 8px;
   right: 8px;
-  color: #2f2f2f;
-  font-size: 1rem;
+  display: flex;
+  gap: 0.5rem;
   z-index: 1;
-  transition: color 0.2s ease;
+`;
+
+const ProjectLinkIcon = styled.a`
+  color: #1f1f1f;
+  font-size: 1rem;
+  filter: drop-shadow(1px 1px 0 rgba(47, 47, 47, 0.35));
+  transition: color 0.2s ease, filter 0.2s ease;
 
   &:hover {
     color: #000;
+    filter: drop-shadow(1px 1px 0 rgba(47, 47, 47, 0.55));
   }
+`;
+
+const AwardBadge = styled.div`
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  z-index: 2;
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 999px;
+  background-color: #ffd34d;
+  border: 3px solid #2f2f2f;
+  box-shadow: 3px 3px 0 #2f2f2f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8a5a00;
+  font-size: 1rem;
+
+  &:hover span {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+`;
+
+const AwardTooltip = styled.span`
+  position: absolute;
+  bottom: calc(100% + 0.85rem);
+  left: -0.25rem;
+  min-width: 150px;
+  max-width: 220px;
+  padding: 0.55rem 0.7rem;
+  background-color: #ffffff;
+  color: #2f2f2f;
+  border: 2px solid #2f2f2f;
+  border-radius: 18px;
+  box-shadow: 4px 4px 0 #2f2f2f;
+  font-size: 0.45rem;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
 `;
 
 const LevelBadge = styled.span`
@@ -123,15 +175,36 @@ const LevelBadge = styled.span`
   box-shadow: 2px 2px 0 #b8860b;
 `;
 
+const projectGitHubLinks = {
+  dillPkl: 'https://github.com/jasmehar-k/dill.pkl',
+  iClick: 'https://github.com/jasmehar-k/iClick',
+  visionCAD: 'https://github.com/jasmehar-k/VisionCAD',
+  breadBoard: 'https://github.com/jasmehar-k/BREAD.board',
+};
+
+const projectAwards = {
+  dillPkl: 'Best Production-Ready AI Tool at GenAI Genesis 2026',
+  visionCAD: '2nd Place at EngHacks 2026',
+};
+
 const ProjectsSection = () => {
   return (
     <ProjectsContainer id="projects">
       <Title>Projects</Title>
       <ProjectGrid>
-            <ProjectCard>
-          <GitHubIcon href="https://devpost.com/software/dill-pkl" target="_blank" rel="noopener noreferrer">
-            <Icon icon="simple-icons:devpost"  />
-          </GitHubIcon>
+        <ProjectCard>
+          <AwardBadge aria-label="dill.pkl award">
+            <FaAward />
+            <AwardTooltip>{projectAwards.dillPkl}</AwardTooltip>
+          </AwardBadge>
+          <LinkIcons>
+            <ProjectLinkIcon href={projectGitHubLinks.dillPkl} target="_blank" rel="noopener noreferrer" aria-label="dill.pkl GitHub repository">
+              <FaGithub />
+            </ProjectLinkIcon>
+            <ProjectLinkIcon href="https://devpost.com/software/dill-pkl" target="_blank" rel="noopener noreferrer" aria-label="dill.pkl Devpost page">
+              <Icon icon="simple-icons:devpost"  />
+            </ProjectLinkIcon>
+          </LinkIcons>
               <ProjectName>dill.pkl</ProjectName>
               <SkillTags>
                   <SkillTag>Optuna</SkillTag>
@@ -148,9 +221,14 @@ engineering, model selection, training, and evaluation) and outputs a deployable
                 </Description>
       </ProjectCard>
       <ProjectCard>
-          <GitHubIcon href="https://devpost.com/software/iclick-4rynjv" target="_blank" rel="noopener noreferrer">
-            <Icon icon="simple-icons:devpost"  />
-          </GitHubIcon>
+          <LinkIcons>
+            <ProjectLinkIcon href={projectGitHubLinks.iClick} target="_blank" rel="noopener noreferrer" aria-label="iClick GitHub repository">
+              <FaGithub />
+            </ProjectLinkIcon>
+            <ProjectLinkIcon href="https://devpost.com/software/iclick-4rynjv" target="_blank" rel="noopener noreferrer" aria-label="iClick Devpost page">
+              <Icon icon="simple-icons:devpost"  />
+            </ProjectLinkIcon>
+          </LinkIcons>
               <ProjectName>iClick</ProjectName>
               <SkillTags>
                   <SkillTag>Gradient Boosting Regression</SkillTag>
@@ -166,9 +244,18 @@ engineering, model selection, training, and evaluation) and outputs a deployable
               </Description>
       </ProjectCard>
       <ProjectCard>
-          <GitHubIcon href="https://devpost.com/software/visioncad" target="_blank" rel="noopener noreferrer">
+          <AwardBadge aria-label="VisionCAD award">
+            <FaAward />
+            <AwardTooltip>{projectAwards.visionCAD}</AwardTooltip>
+          </AwardBadge>
+          <LinkIcons>
+            <ProjectLinkIcon href={projectGitHubLinks.visionCAD} target="_blank" rel="noopener noreferrer" aria-label="VisionCAD GitHub repository">
+              <FaGithub />
+            </ProjectLinkIcon>
+            <ProjectLinkIcon href="https://devpost.com/software/visioncad" target="_blank" rel="noopener noreferrer" aria-label="VisionCAD Devpost page">
               <Icon icon="simple-icons:devpost" />
-          </GitHubIcon>
+            </ProjectLinkIcon>
+          </LinkIcons>
           <ProjectName>VisionCAD</ProjectName>
           <SkillTags>
               <SkillTag>FastAPI</SkillTag>
@@ -184,9 +271,14 @@ engineering, model selection, training, and evaluation) and outputs a deployable
           </Description>
       </ProjectCard>
       <ProjectCard>
-          <GitHubIcon href="https://devpost.com/software/circuit-build" target="_blank" rel="noopener noreferrer">
-            <Icon icon="simple-icons:devpost"  />
-          </GitHubIcon>
+          <LinkIcons>
+            <ProjectLinkIcon href={projectGitHubLinks.breadBoard} target="_blank" rel="noopener noreferrer" aria-label="BREAD.board GitHub repository">
+              <FaGithub />
+            </ProjectLinkIcon>
+            <ProjectLinkIcon href="https://devpost.com/software/circuit-build" target="_blank" rel="noopener noreferrer" aria-label="BREAD.board Devpost page">
+              <Icon icon="simple-icons:devpost"  />
+            </ProjectLinkIcon>
+          </LinkIcons>
               <ProjectName>BREAD.board</ProjectName>
               <SkillTags>
                 <SkillTag>FastAPI</SkillTag>
@@ -200,11 +292,13 @@ engineering, model selection, training, and evaluation) and outputs a deployable
               </ImageWrapper>
               <Description>
                 Real-time circuit-building assistant that streams live video to analyze breadboard assembly, interpret schematics, and deliver step-by-step guidance and answer user questions.              </Description>
-      </ProjectCard>
-      <ProjectCard>
-            <GitHubIcon href="https://devpost.com/software/foot-print" target="_blank" rel="noopener noreferrer">
-                <Icon icon="simple-icons:devpost"  />
-            </GitHubIcon>
+        </ProjectCard>
+        <ProjectCard>
+            <LinkIcons>
+                <ProjectLinkIcon href="https://devpost.com/software/foot-print" target="_blank" rel="noopener noreferrer">
+                    <Icon icon="simple-icons:devpost"  />
+                </ProjectLinkIcon>
+            </LinkIcons>
             <ProjectName>FOOT.print</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
@@ -222,9 +316,11 @@ engineering, model selection, training, and evaluation) and outputs a deployable
                 </Description>
         </ProjectCard>
         <ProjectCard>
-            <GitHubIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
-                <FaGithub />
-            </GitHubIcon>
+            <LinkIcons>
+                <ProjectLinkIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
+                    <FaGithub />
+                </ProjectLinkIcon>
+            </LinkIcons>
             <ProjectName>Braillinator</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
@@ -242,9 +338,11 @@ engineering, model selection, training, and evaluation) and outputs a deployable
         </ProjectCard>
 
                 <ProjectCard>
-                    <GitHubIcon href="https://github.com/jasmehar-k/breast-cancer-prediction" target="_blank" rel="noopener noreferrer">
-                        <FaGithub />
-                    </GitHubIcon>
+                    <LinkIcons>
+                        <ProjectLinkIcon href="https://github.com/jasmehar-k/breast-cancer-prediction" target="_blank" rel="noopener noreferrer">
+                            <FaGithub />
+                        </ProjectLinkIcon>
+                    </LinkIcons>
                 <ProjectName>Breast Cancer Prediction Model</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
@@ -259,9 +357,11 @@ engineering, model selection, training, and evaluation) and outputs a deployable
                 Neural network built in PyTorch classified breast cancer tumors with 96% accuracy, optimized using binary cross-entropy loss and the Adam optimizer.                </Description>
         </ProjectCard>
         <ProjectCard>
-            <GitHubIcon href="https://github.com/jasmehar-k/traffic-simulation" target="_blank" rel="noopener noreferrer">
-                <FaGithub />
-            </GitHubIcon>
+            <LinkIcons>
+                <ProjectLinkIcon href="https://github.com/jasmehar-k/traffic-simulation" target="_blank" rel="noopener noreferrer">
+                    <FaGithub />
+                </ProjectLinkIcon>
+            </LinkIcons>
                 <ProjectName>Road Traffic Simulation</ProjectName>
                 <SkillTags>
                     <SkillTag>Java</SkillTag>
@@ -276,9 +376,11 @@ engineering, model selection, training, and evaluation) and outputs a deployable
                 Multi-threaded simulator for a 4-way intersection, optimizing traffic light durations with realistic driver behaviors modeled from real-world data.                </Description>
         </ProjectCard>
         <ProjectCard>
-            <GitHubIcon href="https://devpost.com/software/recipe-finder-xed0oz" target="_blank" rel="noopener noreferrer">
-                <Icon icon="simple-icons:devpost"  />
-            </GitHubIcon>
+            <LinkIcons>
+                <ProjectLinkIcon href="https://devpost.com/software/recipe-finder-xed0oz" target="_blank" rel="noopener noreferrer">
+                    <Icon icon="simple-icons:devpost"  />
+                </ProjectLinkIcon>
+            </LinkIcons>
                 <ProjectName>Recipe Finder</ProjectName>
                 <SkillTags>
                     <SkillTag>Python</SkillTag>
@@ -295,9 +397,11 @@ engineering, model selection, training, and evaluation) and outputs a deployable
                     Web app that finds recipes based on user input by scraping and filtering online sources for relevant ingredient and instruction data. </Description>
         </ProjectCard>
         <ProjectCard>
-            <GitHubIcon href="https://github.com/jasmehar-k/jasmehar-k.github.io" target="_blank" rel="noopener noreferrer">
-                <FaGithub />
-            </GitHubIcon>
+            <LinkIcons>
+                <ProjectLinkIcon href="https://github.com/jasmehar-k/jasmehar-k.github.io" target="_blank" rel="noopener noreferrer">
+                    <FaGithub />
+                </ProjectLinkIcon>
+            </LinkIcons>
                 <ProjectName>Portfolio Website (this site!)</ProjectName>
                 <SkillTags>
                     <SkillTag>React.js</SkillTag>
@@ -317,4 +421,3 @@ engineering, model selection, training, and evaluation) and outputs a deployable
 };
 
 export default ProjectsSection;
-
