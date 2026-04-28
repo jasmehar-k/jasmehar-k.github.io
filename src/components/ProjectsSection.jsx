@@ -220,6 +220,28 @@ const ProjectsSection = () => {
 engineering, model selection, training, and evaluation) and outputs a deployable model.
                 </Description>
       </ProjectCard>
+        <ProjectCard>
+            <LinkIcons>
+                <ProjectLinkIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
+                    <FaGithub />
+                </ProjectLinkIcon>
+            </LinkIcons>
+            <ProjectName>Braillinator</ProjectName>
+                <SkillTags>
+                    <SkillTag>Python</SkillTag>
+                    <SkillTag>PyTorch</SkillTag>
+                    <SkillTag>U-Net</SkillTag>
+                    <SkillTag>OCR</SkillTag>
+                    <SkillTag>Raspberry Pi</SkillTag>
+                    <SkillTag>React Native</SkillTag>
+                </SkillTags>
+                <ImageWrapper>
+                    <img src={braillinator} alt="Braillinator" />
+                </ImageWrapper>
+                <Description>
+                Real-time text-to-Braille system using a React Native app and Raspberry Pi that converts phone camera images into tactile Braille output, with a conditional U-Net that sharpens degraded photos before Tesseract OCR to reduce miss rates by up to 46%.
+                </Description>
+        </ProjectCard>
       <ProjectCard>
           <LinkIcons>
             <ProjectLinkIcon href={projectGitHubLinks.iClick} target="_blank" rel="noopener noreferrer" aria-label="iClick GitHub repository">
@@ -315,28 +337,6 @@ engineering, model selection, training, and evaluation) and outputs a deployable
                 AI pipeline that processes a video of a room to extract object positions, estimates depth and dimensions, and generates a validated, feng shui–optimized 3D room layout rendered in Blender.
                 </Description>
         </ProjectCard>
-        <ProjectCard>
-            <LinkIcons>
-                <ProjectLinkIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
-                    <FaGithub />
-                </ProjectLinkIcon>
-            </LinkIcons>
-            <ProjectName>Braillinator</ProjectName>
-                <SkillTags>
-                    <SkillTag>Python</SkillTag>
-                    <SkillTag>OCR</SkillTag>
-                    <SkillTag>WebSocket</SkillTag>
-                    <SkillTag>Raspberry Pi</SkillTag>
-                    <SkillTag>React Native</SkillTag>
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={braillinator} alt="Braillinator" />
-                </ImageWrapper>
-                <Description>
-                Real-time text-to-Braille system that uses a mobile app and Raspberry Pi to convert captured images into tactile Braille.
-                </Description>
-        </ProjectCard>
-
                 <ProjectCard>
                     <LinkIcons>
                         <ProjectLinkIcon href="https://github.com/jasmehar-k/breast-cancer-prediction" target="_blank" rel="noopener noreferrer">
