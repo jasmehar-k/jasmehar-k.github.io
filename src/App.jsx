@@ -1,4 +1,4 @@
-import GlobalStyle from './components/GlobalStyle'; 
+import GlobalStyle from './components/GlobalStyle';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
@@ -6,11 +6,11 @@ import ProjectsSection from './components/ProjectsSection';
 import SkillsSection from './components/SkillsSection';
 import ExperienceSection from './components/ExperienceSection';
 import MarioEndScene from './components/MarioEndScene';
+import IntroGate from './components/IntroGate';
 
-function App() {
+function PortfolioContent() {
   return (
     <>
-      <GlobalStyle />
       <Navbar />
       <HeroSection />
       <AboutSection id="about" />
@@ -18,7 +18,17 @@ function App() {
       <ExperienceSection id="experience" />
       <ProjectsSection id="projects" />
       <MarioEndScene />
+    </>
+  );
+}
 
+function App() {
+  return (
+    <>
+      <GlobalStyle />
+      <IntroGate>
+        <PortfolioContent />
+      </IntroGate>
     </>
   );
 }

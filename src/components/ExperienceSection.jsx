@@ -204,8 +204,6 @@ const ExperienceTimeline = () => {
       
           const sectionTop = sectionRef.current.offsetTop;
           const sectionHeight = sectionRef.current.offsetHeight;
-          const scrollY = window.scrollY + window.innerHeight / 2;
-      
           // Show Mario if scrolled past the section top
           if (window.scrollY >= sectionTop) {
             setAnimateMario(true);

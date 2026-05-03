@@ -2,14 +2,13 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import project1 from '../assets/project1.png'; 
-import project2 from '../assets/project2.png';
 import recipeFinder from '../assets/recipe_finder.png'; 
 import intersection from '../assets/intersection.png';
 import foot_print from '../assets/foot_print.png';
 import braillinator from '../assets/braillinator.png'; 
 import portfolio from '../assets/portfolio.png'; 
 import prediction from '../assets/prediction.png';
+import pelican from '../assets/pelican.png';
 import iclick from '../assets/iclick.jpg';
 import breadboard from '../assets/breadboard.png';
 import visionCAD from '../assets/visionCAD.png';
@@ -192,6 +191,30 @@ const ProjectsSection = () => {
     <ProjectsContainer id="projects">
       <Title>Projects</Title>
       <ProjectGrid>
+        <ProjectCard>
+    <LinkIcons>
+        <ProjectLinkIcon href="https://github.com/jasmehar-k/pelican" target="_blank" rel="noopener noreferrer">
+            <FaGithub />
+        </ProjectLinkIcon>
+    </LinkIcons>
+      <ProjectName>Pelican</ProjectName>
+          <SkillTags>
+              <SkillTag>Python</SkillTag>
+              <SkillTag>LangGraph</SkillTag>
+              <SkillTag>Polars</SkillTag>
+              <SkillTag>DuckDB</SkillTag>
+              <SkillTag>FastAPI</SkillTag>
+              <SkillTag>React</SkillTag>
+              <SkillTag>CVXPy</SkillTag>
+          </SkillTags>
+          <ImageWrapper>
+              <img src={pelican} alt="Pelican" />
+          </ImageWrapper>
+          <Description>
+          Autonomous factor research platform where LLM agents search arXiv, generate alpha signal code, and run point-in-time backtests, accepting only signals with IC t-stat ≥ 1.5. Accepted signals feed a CVXPy mean-variance portfolio optimizer with an Almgren-Chriss transaction cost model, streamed live through a React dashboard.
+          </Description>
+      </ProjectCard>
+
         <ProjectCard>
           <AwardBadge aria-label="dill.pkl award">
             <FaAward />

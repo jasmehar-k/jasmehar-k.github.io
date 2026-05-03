@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-scroll';
-import { FaLinkedin, FaGithub, FaEnvelope, FaFilePdf, FaFileAlt } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaEnvelope, FaFileAlt } from 'react-icons/fa';
 
 
 const Nav = styled.nav`
@@ -129,10 +129,9 @@ const IconButton = styled.a`
 const ScrollLink = styled(Link).attrs({
     smooth: true,
     duration: 500,
-    offset: -80, 
+    offset: -80,
 })`
   background-color: #ffcc00;
-  
   color: black;
   border: none;
   margin-top: ${({ marginTop }) => marginTop || '0'};
@@ -156,10 +155,10 @@ const ScrollLink = styled(Link).attrs({
     transform: translateY(2px);
     box-shadow: inset -2px -2px 0px rgba(0,0,0,0.3);
   }
+
   @media (max-width: 600px) {
-    &:hover {
-      transform: none; /* Disable transform on hover for small screens */
-    }
+    &:hover { transform: none; }
+  }
 `;
 
 const Navbar = () => {
@@ -203,9 +202,9 @@ const Navbar = () => {
       </NavSection>
 
       <NavSection>
-        <ScrollLink to="skills" color="#ffcc00">Skills</ScrollLink>
-        <ScrollLink to="experience" color="#ffcc00">Experience</ScrollLink>
-        <ScrollLink to="projects" color="#ffcc00">Projects</ScrollLink>
+        <ScrollLink to="skills">Skills</ScrollLink>
+        <ScrollLink to="experience">Experience</ScrollLink>
+        <ScrollLink to="projects">Projects</ScrollLink>
       </NavSection>
     </Nav>
   );
