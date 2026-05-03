@@ -14,7 +14,7 @@ import iclick from '../assets/iclick.jpg';
 import breadboard from '../assets/breadboard.png';
 import visionCAD from '../assets/visionCAD.png';
 import dill_pkl from '../assets/dill_pkl.png';
-import pelican from '.../assets/pelican.png';
+import pelican from '../assets/pelican.png';
 import { FaAward, FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 
@@ -213,7 +213,7 @@ const ProjectsSection = () => {
                     <img src={pelican} alt="Pelican" />
                 </ImageWrapper>
                 <Description>
-                Autonomous factor research platform where LLM agents search arXiv, generate alpha signal code, and run point-in-time backtests, accepting only signals with IC t-stat ≥ 1.5. Accepted signals feed a CVXPy mean-variance portfolio optimizer with an Almgren-Chriss transaction cost model, streamed live through a React dashboard.
+                Autonomous factor research platform where LLM agents search arXiv, generate alpha signal code, and run point-in-time backtests, accepting signals with IC t-stat ≥ 1.5. Accepted signals feed a CVXPy mean-variance portfolio optimizer with an Almgren-Chriss transaction cost model.
                 </Description>
             </ProjectCard>
 
