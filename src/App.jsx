@@ -15,8 +15,9 @@ function App() {
       <HeroSection />
       <AboutSection id="about" />
       <SkillsSection id="skills" />
-      <ExperienceSection id="experience" />
       <ProjectsSection id="projects" />
+
+      <ExperienceSection id="experience" />
       <MarioEndScene />
 
     </>
