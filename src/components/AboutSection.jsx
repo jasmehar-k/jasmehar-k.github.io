@@ -27,8 +27,9 @@ const Content = styled.div`
 `;
 
 const PhotoWrapper = styled.div`
-  width: 200px;
-  height: 200px;
+  width: 280px;
+  height: 280px;
+  flex-shrink: 0;
   border: 4px solid #2f2f2f;
   background-color: #fff;
   background-image: url(${myPhoto});
@@ -57,7 +58,7 @@ const AboutSection = () => {
       <Content>
         <PhotoWrapper />
         <Bio>
-          Hello! I'm Jasmehar Kaur, a 2nd year Software Engineering student at the University of Waterloo.<br /><br />
+          Hello! I'm Jasmehar, a 2nd year Software Engineering student at the University of Waterloo.<br /><br />
           My interests lie around the intersection of artifical intelligence, software development, and real-world problem solving. I’ve built neural networks in PyTorch, worked on computer vision applications, and explored information retrieval systems using LangGraph and OpenSearch.<br /><br />
           I enjoy developing end-to-end solutions that blend intelligent systems with clean, maintainable code. I'm excited to keep learning and applying cutting-edge technology to create meaningful impact.
         </Bio>
