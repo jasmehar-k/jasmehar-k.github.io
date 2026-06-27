@@ -88,14 +88,32 @@ const Connector = styled.div`
 `;
 
 const Card = styled.div`
-  background-color: #fffab8;
-  padding: 1rem 1.5rem;
+  background-color: #f8b800;
+  /* four corner rivets, like a ? block */
+  background-image:
+    linear-gradient(#2f2f2f, #2f2f2f),
+    linear-gradient(#2f2f2f, #2f2f2f),
+    linear-gradient(#2f2f2f, #2f2f2f),
+    linear-gradient(#2f2f2f, #2f2f2f);
+  background-repeat: no-repeat;
+  background-size: 7px 7px;
+  background-position:
+    7px 7px,
+    calc(100% - 7px) 7px,
+    7px calc(100% - 7px),
+    calc(100% - 7px) calc(100% - 7px);
+  padding: 1.5rem 1.5rem;
   border: 4px solid #2f2f2f;
-  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow:
+    6px 6px 0 #2f2f2f,
+    inset 4px 4px 0 rgba(255, 255, 255, 0.4),
+    inset -5px -5px 0 rgba(180, 100, 0, 0.45);
   font-size: 0.75rem;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
+  image-rendering: pixelated;
 `;
 
 const JobTitle = styled.h3`
@@ -121,16 +139,76 @@ const Divider = styled.hr`
   margin: 0.5rem 0;
 `;
 
-const DescriptionList = styled.ul`
+const SlideArea = styled.div`
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+`;
+
+const ArrowButton = styled.button`
+  font-family: 'Press Start 2P', cursive;
+  background-color: #e52521;
+  color: #fff;
+  border: 3px solid #2f2f2f;
+  box-shadow: 3px 3px 0 #2f2f2f;
+  cursor: pointer;
+  padding: 0 0.6rem;
+  font-size: 0.7rem;
+  line-height: 1;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+
+  &:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 #2f2f2f;
+  }
+
+  &:disabled {
+    background-color: #b8b8b8;
+    box-shadow: 3px 3px 0 #2f2f2f;
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+  }
+`;
+
+const SlideText = styled.p`
   margin: 0;
-  padding-left: 1.2rem;
-  list-style-type: "-> ";
-  line-height: 1.5;
+  flex: 1;
+  min-height: 5rem;
+  display: flex;
+  align-items: center;
+  line-height: 1.7;
   color: #333;
 `;
 
-const DescriptionItem = styled.li`
-  margin-bottom: 0.5rem;
+const SlideFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+`;
+
+const Dot = styled.button`
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 2px solid #2f2f2f;
+  background-color: ${({ $active }) => ($active ? '#e52521' : '#fff6da')};
+  cursor: pointer;
+  image-rendering: pixelated;
+`;
+
+const IncomingTag = styled.span`
+  align-self: flex-start;
+  background-color: #43b047;
+  color: #fff;
+  border: 2px solid #2f2f2f;
+  box-shadow: 2px 2px 0 #2f2f2f;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.55rem;
+  letter-spacing: 1px;
 `;
 
 const MarioSlide = styled.img`
@@ -149,6 +227,28 @@ const MarioSlide = styled.img`
 
 
 const ExperienceData = [
+  {
+    upcoming: true,
+    title: 'Software Development Engineer Intern',
+    company: 'Amazon Web Services',
+    duration: 'Sep 2026 - Dec 2026',
+    description: [
+      'Joining the Aurora open source control plane team as a Software Development Engineer Intern.',
+    ],
+    align: 'left',
+  },
+  {
+    title: 'Software Developer',
+    company: 'Royal Bank of Canada',
+    duration: 'Jan 2026 – May 2026',
+    description: [
+      'Built a Kafka producer in Java to stream household portfolio data for 4 million clients to downstream teams, enabling real-time cross-team data access at scale.',
+      'Designed and implemented backend features integrating with Microsoft SQL Server, supporting relational workflows processing 50 thousand records per transaction cycle.',
+      'Optimized SQL queries, joins, and stored procedures to reduce query latency by 37%, resolving multi-threaded service bottlenecks across normalized schemas.',
+      'Resolved 30+ dependency CVEs surfaced by Aqua and Snyk, and built DAST and SAST test pipelines from scratch, reducing security exposure across the portfolio modelling application.',
+    ],
+    align: 'right',
+  },
   {
     title: 'Full-Stack and Machine Learning Developer Intern',
     company: 'Nokia',
@@ -191,6 +291,43 @@ const ExperienceData = [
     align: 'left',
   }
 ];
+
+const ExperienceCard = ({ exp }) => {
+  const [slide, setSlide] = useState(0);
+  const total = exp.description.length;
+
+  const prev = () => setSlide((s) => Math.max(0, s - 1));
+  const next = () => setSlide((s) => Math.min(total - 1, s + 1));
+
+  return (
+    <Card>
+      {exp.upcoming && <IncomingTag>INCOMING</IncomingTag>}
+      <JobTitle>{exp.title}</JobTitle>
+      <Company>{exp.company}</Company>
+      <Duration>{exp.duration}</Duration>
+      <Divider />
+      <SlideArea>
+        <ArrowButton onClick={prev} disabled={slide === 0} aria-label="previous">
+          {'<'}
+        </ArrowButton>
+        <SlideText>{exp.description[slide].trim()}</SlideText>
+        <ArrowButton onClick={next} disabled={slide === total - 1} aria-label="next">
+          {'>'}
+        </ArrowButton>
+      </SlideArea>
+      <SlideFooter>
+        {exp.description.map((_, i) => (
+          <Dot
+            key={i}
+            $active={i === slide}
+            onClick={() => setSlide(i)}
+            aria-label={`slide ${i + 1}`}
+          />
+        ))}
+      </SlideFooter>
+    </Card>
+  );
+};
 
 const ExperienceTimeline = () => {
     const sectionRef = useRef(null);
@@ -241,17 +378,7 @@ const ExperienceTimeline = () => {
       {ExperienceData.map((exp, index) => (
         <ExperienceItem key={index} align={exp.align}>
           <Connector align={exp.align} />
-          <Card>
-            <JobTitle>{exp.title}</JobTitle>
-            <Company>{exp.company}</Company>
-            <Duration>{exp.duration}</Duration>
-            <Divider />
-            <DescriptionList>
-              {exp.description.map((item, idx) => (
-                <DescriptionItem key={idx}>{item}</DescriptionItem>
-              ))}
-            </DescriptionList>
-          </Card>
+          <ExperienceCard exp={exp} />
         </ExperienceItem>
       ))}
     </ExperienceSection>

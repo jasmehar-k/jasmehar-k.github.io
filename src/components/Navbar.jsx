@@ -204,8 +204,8 @@ const Navbar = () => {
 
       <NavSection>
         <ScrollLink to="skills" color="#ffcc00">Skills</ScrollLink>
-        <ScrollLink to="projects" color="#ffcc00">Projects</ScrollLink>
         <ScrollLink to="experience" color="#ffcc00">Experience</ScrollLink>
+        <ScrollLink to="projects" color="#ffcc00">Projects</ScrollLink>
       </NavSection>
     </Nav>
   );
