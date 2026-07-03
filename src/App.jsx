@@ -1,4 +1,5 @@
 import GlobalStyle from './components/GlobalStyle';
+import IntroGate from './components/IntroGate';
 import StatusBar from './components/StatusBar';
 import PixelCursor from './components/PixelCursor';
 import HeroSection from './components/HeroSection';
@@ -12,14 +13,16 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <StatusBar />
-      <PixelCursor />
-      <HeroSection />
-      <AboutSection id="about" />
-      <SkillsSection id="skills" />
-      <ExperienceSection id="experience" />
-      <ProjectsSection id="projects" />
-      <MarioEndScene />
+      <IntroGate>
+        <StatusBar />
+        <PixelCursor />
+        <HeroSection />
+        <AboutSection id="about" />
+        <SkillsSection id="skills" />
+        <ExperienceSection id="experience" />
+        <ProjectsSection id="projects" />
+        <MarioEndScene />
+      </IntroGate>
     </>
   );
 }
