@@ -1,142 +1,124 @@
+// ExperienceSection.jsx — world 1-4, castle
 import React, { useRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import flag from '../assets/flag.png'; 
-import marioSlide from '../assets/mario_slide.png'; 
+import styled, { keyframes } from 'styled-components';
+import marioSlide from '../assets/mario_slide.png';
+import WorldPlaque from './WorldPlaque';
 
-const ExperienceSection = styled.section`
-  background-color: #3b9aff;
-  padding: 5rem 2rem;
-  font-family: 'Press Start 2P', cursive;
-  position: relative;
-  border-bottom: 4px solid #2f2f2f;
-
+const flicker = keyframes`
+  0%, 100% { box-shadow: 0 0 14px 4px rgba(255, 123, 61, 0.55); }
+  50%      { box-shadow: 0 0 22px 7px rgba(255, 123, 61, 0.8); }
 `;
 
-const SectionTitle = styled.h2`
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 8rem;
-  color: #2f2f2f;
+const SectionWrapper = styled.section`
+  position: relative;
+  padding: 5rem 2rem 6rem;
+  border-bottom: 4px solid #000;
+  /* castle brickwork */
+  background:
+    repeating-linear-gradient(90deg, transparent 0 74px, rgba(0, 0, 0, 0.5) 74px 78px),
+    repeating-linear-gradient(0deg, transparent 0 33px, rgba(0, 0, 0, 0.5) 33px 37px),
+    linear-gradient(180deg, #26262e 0%, var(--castle-bg) 100%);
 `;
 
 const Timeline = styled.div`
   position: absolute;
-  top: 10rem;
-  bottom: 0;
+  top: 14rem;
+  bottom: 3rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 8px;
-  background-color: #2f2f2f;
+  width: 10px;
+  background: #3c3c46;
+  border: 3px solid #000;
+
   @media (max-width: 600px) {
     display: none;
   }
-
-`;
-
-const Flag = styled.img`
-  position: absolute;
-  top: 10rem;
-  left: calc(50%);
-  width: 150px;
-  image-rendering: pixelated;
-  @media (max-width: 600px) {
-    display: none;
-  }
-
 `;
 
 const ExperienceItem = styled.div`
   position: relative;
   width: 50%;
-  padding: 1rem 2rem;
+  padding: 1rem 2.4rem;
   box-sizing: border-box;
   left: ${({ align }) => (align === 'left' ? '0' : '50%')};
-  text-align: ${({ align }) => (align === 'left' ? 'right' : 'left')};
 
   &:not(:last-child) {
-    margin-bottom: 4rem;
+    margin-bottom: 3.4rem;
   }
 
   @media (max-width: 768px) {
     width: 100%;
     left: 0;
-    text-align: left;
+    padding: 1rem 0;
   }
-
-  &:hover {
-    transform: scale(1.05);
-  }
-  @media (max-width: 600px) {
-    &:hover {
-      transform: none; /* Disable transform on hover for small screens */
-    }
 `;
 
-const Connector = styled.div`
+/* wall torch marking each checkpoint */
+const Torch = styled.div`
   position: absolute;
-  top: 1rem;
-  width: 20px;
-  height: 20px;
-  background-color: #ffcc00;
-  border: 4px solid #2f2f2f;
+  top: 1.4rem;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  left: ${({ align }) => (align === 'left' ? 'calc(100% - 10px)' : '-10px')};
-  @media (max-width: 600px) {
+  background: radial-gradient(circle at 40% 35%, #ffd265, var(--castle-glow));
+  border: 3px solid #000;
+  animation: ${flicker} 1.6s ease-in-out infinite;
+  left: ${({ align }) => (align === 'left' ? 'calc(100% - 12px)' : '-12px')};
+
+  @media (max-width: 768px) {
     display: none;
   }
-
 `;
 
 const Card = styled.div`
-  background-color: #f8b800;
-  /* four corner rivets, like a ? block */
-  background-image:
-    linear-gradient(#2f2f2f, #2f2f2f),
-    linear-gradient(#2f2f2f, #2f2f2f),
-    linear-gradient(#2f2f2f, #2f2f2f),
-    linear-gradient(#2f2f2f, #2f2f2f);
-  background-repeat: no-repeat;
-  background-size: 7px 7px;
-  background-position:
-    7px 7px,
-    calc(100% - 7px) 7px,
-    7px calc(100% - 7px),
-    calc(100% - 7px) calc(100% - 7px);
-  padding: 1.5rem 1.5rem;
-  border: 4px solid #2f2f2f;
-  box-shadow:
-    6px 6px 0 #2f2f2f,
-    inset 4px 4px 0 rgba(255, 255, 255, 0.4),
-    inset -5px -5px 0 rgba(180, 100, 0, 0.45);
-  font-size: 0.75rem;
-  text-align: left;
+  background: #2b2b35;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.55), inset 3px 3px 0 rgba(255, 255, 255, 0.06);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  image-rendering: pixelated;
+  text-align: left;
+`;
+
+const IncomingTag = styled.span`
+  align-self: flex-start;
+  background: var(--pipe);
+  color: #fff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  padding: 0.3rem 0.5rem;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  letter-spacing: 1px;
 `;
 
 const JobTitle = styled.h3`
   margin: 0;
-  font-size: 0.9rem;
-  color: #2f2f2f;
+  font-family: var(--font-pixel);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--gold);
 `;
 
 const Company = styled.div`
-  font-weight: bold;
-  font-size: 0.75rem;
-  color: #444;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fffef7;
 `;
 
 const Duration = styled.div`
-  font-size: 0.65rem;
-  color: #666;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--castle-stone);
 `;
 
 const Divider = styled.hr`
   border: none;
-  border-top: 2px dashed #2f2f2f;
+  border-top: 2px dashed #4a4a56;
   margin: 0.5rem 0;
+  width: 100%;
 `;
 
 const SlideArea = styled.div`
@@ -146,29 +128,28 @@ const SlideArea = styled.div`
 `;
 
 const ArrowButton = styled.button`
-  font-family: 'Press Start 2P', cursive;
-  background-color: #e52521;
+  font-family: var(--font-pixel);
+  background: var(--mario-red);
   color: #fff;
-  border: 3px solid #2f2f2f;
-  box-shadow: 3px 3px 0 #2f2f2f;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
   cursor: pointer;
   padding: 0 0.6rem;
   font-size: 0.7rem;
   line-height: 1;
   flex-shrink: 0;
-  image-rendering: pixelated;
 
   &:active {
     transform: translate(3px, 3px);
-    box-shadow: 0 0 0 #2f2f2f;
+    box-shadow: 0 0 0 #000;
   }
 
   &:disabled {
-    background-color: #b8b8b8;
-    box-shadow: 3px 3px 0 #2f2f2f;
-    opacity: 0.5;
+    background: #4a4a56;
+    opacity: 0.55;
     cursor: default;
     transform: none;
+    box-shadow: 3px 3px 0 #000;
   }
 `;
 
@@ -178,8 +159,10 @@ const SlideText = styled.p`
   min-height: 5rem;
   display: flex;
   align-items: center;
-  line-height: 1.7;
-  color: #333;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 254, 247, 0.88);
 `;
 
 const SlideFooter = styled.div`
@@ -194,24 +177,12 @@ const Dot = styled.button`
   width: 12px;
   height: 12px;
   padding: 0;
-  border: 2px solid #2f2f2f;
-  background-color: ${({ $active }) => ($active ? '#e52521' : '#fff6da')};
+  border: 2px solid #000;
+  background: ${({ $active }) => ($active ? 'var(--mario-red)' : '#4a4a56')};
   cursor: pointer;
-  image-rendering: pixelated;
 `;
 
-const IncomingTag = styled.span`
-  align-self: flex-start;
-  background-color: #43b047;
-  color: #fff;
-  border: 2px solid #2f2f2f;
-  box-shadow: 2px 2px 0 #2f2f2f;
-  padding: 0.3rem 0.5rem;
-  font-size: 0.55rem;
-  letter-spacing: 1px;
-`;
-
-const MarioSlide = styled.img`
+const MarioSlideImg = styled.img`
   position: absolute;
   left: calc(50% - 30px);
   width: 50px;
@@ -220,11 +191,11 @@ const MarioSlide = styled.img`
   opacity: ${({ $animate }) => ($animate ? 1 : 0)};
   top: ${({ $top }) => `${$top}px`};
   z-index: 10;
+
   @media (max-width: 600px) {
     display: none;
   }
 `;
-
 
 const ExperienceData = [
   {
@@ -253,14 +224,12 @@ const ExperienceData = [
     title: 'Full-Stack and Machine Learning Developer Intern',
     company: 'Nokia',
     duration: 'April 2025 – Aug 2025',
-    description: ['Built an LLM system to automate 5G alarm resolution',
-      ' Leveraged vector-based RAG for high-relevance retrieval.',
-      
+    description: [
+      'Built an LLM system to automate 5G alarm resolution, leveraging vector-based RAG for high-relevance retrieval.',
       'Engineered and optimized a hybrid (dense + sparse) RAG pipeline in OpenSearch with multi-pass retrieval, boosting precision by 65% and recall by 58%.',
-      
       'Developed scalable backend services with FastAPI and integrated semantic, lexical, and hybrid search for high-performance data retrieval.',
-      
-      'Designed and Developed interactive React frontends with modular components and dynamic theming.'],
+      'Designed and developed interactive React frontends with modular components and dynamic theming.',
+    ],
     align: 'left',
   },
   {
@@ -268,12 +237,11 @@ const ExperienceData = [
     company: 'Trexo Robotics',
     duration: 'July 2022 – Sep 2022',
     description: [
-        'Designed and developed 3 production-deployed web apps to streamline database changes',
-        'Saved the Customer Success team significant hours originally spent on manual edits' ,
-        'Enhanced efficiency by automating manual processes involving multiple Postman requests',
-        'Mitigated errors by providing a controlled interface for database changes',
-        'Improved data traceability through logging mechanisms' 
-        
+      'Designed and developed 3 production-deployed web apps to streamline database changes.',
+      'Saved the Customer Success team significant hours originally spent on manual edits.',
+      'Enhanced efficiency by automating manual processes involving multiple Postman requests.',
+      'Mitigated errors by providing a controlled interface for database changes.',
+      'Improved data traceability through logging mechanisms.',
     ],
     align: 'right',
   },
@@ -282,14 +250,14 @@ const ExperienceData = [
     company: 'Absolute Robotics',
     duration: '2022 – 2024',
     description: [
-        'Led the team’s strategy development and robot design process',
-        'Taught new members about app development, robot mechanics, and strategy development', 
-        'Designed and built a user-friendly mobile app to collect data and track teams’ performances',
-        'Developed a web-based app to collect and analyze scouting data through QR code scanning', 
-        'Implemented data processing for scoring and strategy analysis'  
+      'Led the team’s strategy development and robot design process.',
+      'Taught new members about app development, robot mechanics, and strategy development.',
+      'Designed and built a user-friendly mobile app to collect data and track teams’ performances.',
+      'Developed a web-based app to collect and analyze scouting data through QR code scanning.',
+      'Implemented data processing for scoring and strategy analysis.',
     ],
     align: 'left',
-  }
+  },
 ];
 
 const ExperienceCard = ({ exp }) => {
@@ -317,12 +285,7 @@ const ExperienceCard = ({ exp }) => {
       </SlideArea>
       <SlideFooter>
         {exp.description.map((_, i) => (
-          <Dot
-            key={i}
-            $active={i === slide}
-            onClick={() => setSlide(i)}
-            aria-label={`slide ${i + 1}`}
-          />
+          <Dot key={i} $active={i === slide} onClick={() => setSlide(i)} aria-label={`slide ${i + 1}`} />
         ))}
       </SlideFooter>
     </Card>
@@ -330,58 +293,45 @@ const ExperienceCard = ({ exp }) => {
 };
 
 const ExperienceTimeline = () => {
-    const sectionRef = useRef(null);
-    const [animateMario, setAnimateMario] = useState(false);
-    const [marioTop, setMarioTop] = useState(160); // Start 10rem = 160px
-    const marioRef = useRef();
-    
-    useEffect(() => {
-        const handleScroll = () => {
-          if (!sectionRef.current) return;
-      
-          const sectionTop = sectionRef.current.offsetTop;
-          const sectionHeight = sectionRef.current.offsetHeight;
-          const scrollY = window.scrollY + window.innerHeight / 2;
-      
-          // Show Mario if scrolled past the section top
-          if (window.scrollY >= sectionTop) {
-            setAnimateMario(true);
-      
-            // Calculate Mario's vertical position relative to the section top
-            const relativeScroll = window.scrollY - sectionTop + 180; // 160 = 10rem offset
-      
-            // Clamp Mario's top so he stays within the section
-            const maxTop = sectionHeight - 90; // 60 = Mario's height approx
-            const newMarioTop = Math.min(relativeScroll, maxTop);
-      
-            setMarioTop(newMarioTop);
-          } else {
-            // Before scrolling to section, hide Mario or set initial position
-            setAnimateMario(true);
-            setMarioTop(180);
-          }
-        };
-      
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Initial call on mount
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
-      
-      
+  const sectionRef = useRef(null);
+  const [animateMario, setAnimateMario] = useState(false);
+  const [marioTop, setMarioTop] = useState(180);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+
+      const sectionTop = sectionRef.current.offsetTop;
+      const sectionHeight = sectionRef.current.offsetHeight;
+
+      if (window.scrollY >= sectionTop) {
+        setAnimateMario(true);
+        const relativeScroll = window.scrollY - sectionTop + 180;
+        const maxTop = sectionHeight - 90;
+        setMarioTop(Math.min(relativeScroll, maxTop));
+      } else {
+        setAnimateMario(true);
+        setMarioTop(180);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <ExperienceSection id="experience" ref={sectionRef}>
-      <SectionTitle>Experience</SectionTitle>
-      <Flag src={flag} alt="flag" />
+    <SectionWrapper id="experience" ref={sectionRef}>
+      <WorldPlaque world="1-4" name="EXPERIENCE" light />
       <Timeline />
-      <MarioSlide src={marioSlide} ref={marioRef} $animate={animateMario} $top={marioTop}/>
+      <MarioSlideImg src={marioSlide} $animate={animateMario} $top={marioTop} alt="" />
       {ExperienceData.map((exp, index) => (
         <ExperienceItem key={index} align={exp.align}>
-          <Connector align={exp.align} />
+          <Torch align={exp.align} />
           <ExperienceCard exp={exp} />
         </ExperienceItem>
       ))}
-    </ExperienceSection>
+    </SectionWrapper>
   );
 };
 

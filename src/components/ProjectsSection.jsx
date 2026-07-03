@@ -1,135 +1,179 @@
-
-
+// ProjectsSection.jsx — world 2-2, underwater
 import React from 'react';
-import styled from 'styled-components';
-import project1 from '../assets/project1.png'; 
-import project2 from '../assets/project2.png';
-import recipeFinder from '../assets/recipe_finder.png'; 
+import styled, { keyframes } from 'styled-components';
+import { FaAward, FaGithub } from 'react-icons/fa';
+import { Icon } from '@iconify/react';
+import WorldPlaque from './WorldPlaque';
+
+import project_recipeFinder from '../assets/recipe_finder.png';
 import intersection from '../assets/intersection.png';
 import foot_print from '../assets/foot_print.png';
-import braillinator from '../assets/braillinator.png'; 
-import portfolio from '../assets/portfolio.png'; 
+import braillinator from '../assets/braillinator.png';
+import portfolio from '../assets/portfolio.png';
 import prediction from '../assets/prediction.png';
-import iclick from '../assets/iclick.jpg';
+import iclick from '../assets/iclick.JPG';
 import breadboard from '../assets/breadboard.png';
 import visionCAD from '../assets/visionCAD.png';
 import dill_pkl from '../assets/dill_pkl.png';
 import pelican from '../assets/pelican.png';
-import { FaAward, FaGithub } from 'react-icons/fa';
-import { Icon } from '@iconify/react';
 
-
-const ProjectsContainer = styled.section`
-  background-color: #cceeff;
-  padding: 5rem 2rem;
-  font-family: 'Press Start 2P', cursive;
-  background-color: #3b9aff;
-
+const rise = keyframes`
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: 0.5; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
 `;
 
-const Title = styled.h2`
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 4rem;
-  color: #2f2f2f;
+const ProjectsContainer = styled.section`
+  position: relative;
+  background: linear-gradient(180deg, var(--water) 0%, var(--water-deep) 100%);
+  padding: 5rem 2rem 6rem;
+  overflow: hidden;
+`;
+
+const Bubble = styled.div`
+  position: absolute;
+  bottom: -40px;
+  width: ${({ $size }) => $size}px;
+  height: ${({ $size }) => $size}px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.06));
+  animation: ${rise} ${({ $duration }) => $duration}s linear ${({ $delay }) => $delay}s infinite;
+  pointer-events: none;
+  z-index: 0;
 `;
 
 const ProjectGrid = styled.div`
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 2.2rem;
   justify-content: center;
+  max-width: 1300px;
+  margin: 0 auto;
 `;
 
 const ProjectCard = styled.div`
-  background-color: #fff;
-  border: 4px solid #2f2f2f;
-  width: 300px;
-  padding: 2rem 1rem 1rem 1rem; 
+  background: #fffef7;
+  border: 4px solid #10102a;
+  width: 310px;
+  padding: 0 0 1.2rem;
   position: relative;
-  transition: transform 0.3s ease;
-  box-shadow: 8px 8px 0 #2f2f2f;
+  transition: transform 0.25s ease;
+  box-shadow: 8px 8px 0 rgba(6, 20, 60, 0.65);
+  display: flex;
+  flex-direction: column;
 
   &:hover {
-    transform: scale(1.05);
+    transform: translateY(-6px);
   }
+
   @media (max-width: 600px) {
     &:hover {
-      transform: none; /* Disable transform on hover for small screens */
+      transform: none;
     }
+  }
 `;
+
+const LevelHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--gold);
+  border-bottom: 4px solid #10102a;
+`;
+
+const LevelChip = styled.span`
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  background: #10102a;
+  color: var(--gold);
+  padding: 0.3rem 0.4rem;
+  white-space: nowrap;
+`;
+
 const ProjectName = styled.h3`
-  font-size: 0.75rem;
-  color: #2f2f2f;
-  margin-bottom: 0.75rem;
-  text-align: center;
-  background-color: #ffd700;
-  padding: 0.25rem;
-  border: 2px solid #2f2f2f;
-  box-shadow: 4px 4px 0 #b8860b;
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  color: #10102a;
+  flex: 1;
 `;
+
+const CardBody = styled.div`
+  padding: 1rem 1rem 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
 const SkillTags = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
   margin-bottom: 1rem;
 `;
 
 const SkillTag = styled.span`
-  background-color: #ffcc00;
-  color: #000;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.5rem;
-  border: 2px solid #2f2f2f;
+  background: #e6f2ff;
+  color: #10306a;
+  padding: 0.28rem 0.45rem;
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  border: 2px solid #10306a;
 `;
 
 const ImageWrapper = styled.div`
   overflow: hidden;
   margin-bottom: 1rem;
+  border: 3px solid #10102a;
 
   img {
     width: 100%;
+    display: block;
     object-fit: cover;
-    image-rendering: pixelated;
   }
 `;
 
 const Description = styled.p`
-  font-size: 0.6rem;
-  color: #2f2f2f;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #26263a;
 `;
+
 const LinkIcons = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 8px;
   display: flex;
-  gap: 0.5rem;
-  z-index: 1;
+  gap: 0.55rem;
 `;
 
 const ProjectLinkIcon = styled.a`
-  color: #1f1f1f;
+  color: #10102a;
   font-size: 1rem;
-  filter: drop-shadow(1px 1px 0 rgba(47, 47, 47, 0.35));
-  transition: color 0.2s ease, filter 0.2s ease;
+  display: inline-flex;
+  align-items: center;
 
   &:hover {
-    color: #000;
-    filter: drop-shadow(1px 1px 0 rgba(47, 47, 47, 0.55));
+    color: var(--mario-red);
   }
 `;
 
 const AwardBadge = styled.div`
   position: absolute;
-  top: -12px;
-  left: -12px;
+  top: -14px;
+  left: -14px;
   z-index: 2;
-  width: 2.15rem;
-  height: 2.15rem;
+  width: 2.3rem;
+  height: 2.3rem;
   border-radius: 999px;
-  background-color: #ffd34d;
-  border: 3px solid #2f2f2f;
-  box-shadow: 3px 3px 0 #2f2f2f;
+  background: var(--gold);
+  border: 3px solid #10102a;
+  box-shadow: 3px 3px 0 #10102a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,299 +191,196 @@ const AwardTooltip = styled.span`
   position: absolute;
   bottom: calc(100% + 0.85rem);
   left: -0.25rem;
-  min-width: 150px;
-  max-width: 220px;
-  padding: 0.55rem 0.7rem;
-  background-color: #ffffff;
-  color: #2f2f2f;
-  border: 2px solid #2f2f2f;
-  border-radius: 18px;
-  box-shadow: 4px 4px 0 #2f2f2f;
-  font-size: 0.45rem;
-  line-height: 1.4;
+  min-width: 170px;
+  max-width: 230px;
+  padding: 0.6rem 0.7rem;
+  background: #fffef7;
+  color: #10102a;
+  border: 2px solid #10102a;
+  box-shadow: 4px 4px 0 #10102a;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.72rem;
+  line-height: 1.45;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
   pointer-events: none;
+  z-index: 3;
 `;
 
-const LevelBadge = styled.span`
-  display: inline-block;
-  background-color: #ffcc00;
-  color: #2f2f2f;
-  border: 2px solid #2f2f2f;
-  padding: 0.2rem 0.4rem;
-  margin-right: 0.5rem;
-  font-size: 0.75rem;
-  font-family: 'Press Start 2P', cursive;
-  box-shadow: 2px 2px 0 #b8860b;
-`;
+const BUBBLES = [
+  { left: '6%', size: 18, duration: 13, delay: 0 },
+  { left: '16%', size: 10, duration: 17, delay: 4 },
+  { left: '28%', size: 14, duration: 15, delay: 8 },
+  { left: '44%', size: 9, duration: 19, delay: 2 },
+  { left: '58%', size: 16, duration: 14, delay: 6 },
+  { left: '72%', size: 11, duration: 18, delay: 1 },
+  { left: '84%', size: 20, duration: 12, delay: 9 },
+  { left: '93%', size: 12, duration: 16, delay: 5 },
+];
 
-const projectGitHubLinks = {
-  dillPkl: 'https://github.com/jasmehar-k/dill.pkl',
-  iClick: 'https://github.com/jasmehar-k/iClick',
-  visionCAD: 'https://github.com/jasmehar-k/VisionCAD',
-  breadBoard: 'https://github.com/jasmehar-k/BREAD.board',
-};
-
-const projectAwards = {
-  dillPkl: 'Best Production-Ready AI Tool at GenAI Genesis 2026',
-  visionCAD: '2nd Place at EngHacks 2026',
-};
+const PROJECTS = [
+  {
+    name: 'Pelican',
+    image: pelican,
+    tags: ['Python', 'LangGraph', 'Polars', 'DuckDB', 'FastAPI', 'React', 'CVXPy'],
+    description:
+      'Autonomous factor research platform where LLM agents search arXiv, generate alpha signal code, and run point-in-time backtests, accepting signals with IC t-stat ≥ 1.5. Accepted signals feed a CVXPy mean-variance portfolio optimizer with an Almgren-Chriss transaction cost model.',
+    github: 'https://github.com/jasmehar-k/pelican',
+  },
+  {
+    name: 'dill.pkl',
+    image: dill_pkl,
+    tags: ['Optuna', 'FastAPI', 'Python', 'TypeScript'],
+    description:
+      'Agentic web app that automates the full ML pipeline (data analysis, preprocessing, feature engineering, model selection, training, and evaluation) and outputs a deployable model.',
+    github: 'https://github.com/jasmehar-k/dill.pkl',
+    devpost: 'https://devpost.com/software/dill-pkl',
+    award: 'Best Production-Ready AI Tool at GenAI Genesis 2026',
+  },
+  {
+    name: 'Braillinator',
+    image: braillinator,
+    tags: ['Python', 'PyTorch', 'U-Net', 'OCR', 'Raspberry Pi', 'React Native'],
+    description:
+      'Real-time text-to-Braille system using a React Native app and Raspberry Pi that converts phone camera images into tactile Braille output, with a conditional U-Net that sharpens degraded photos before Tesseract OCR to reduce miss rates by up to 46%.',
+    github: 'https://github.com/jasmehar-k/braillinator',
+  },
+  {
+    name: 'iClick',
+    image: iclick,
+    tags: ['Gradient Boosting Regression', 'Supervised Learning', 'Computer Vision', 'Latency Optimization'],
+    description:
+      'System that enables hands-free computer control using precise cursor control through eye tracking, gesture recognition, and streaming speech-to-text.',
+    github: 'https://github.com/jasmehar-k/iClick',
+    devpost: 'https://devpost.com/software/iclick-4rynjv',
+  },
+  {
+    name: 'VisionCAD',
+    image: visionCAD,
+    tags: ['FastAPI', 'CADQuery', 'Python', 'Vue.js'],
+    description:
+      'Converts hand-drawn sketches into 3D CAD models by analyzing uploaded images with an LLM, extracting geometry, and generating a downloadable STEP file openable in SolidWorks or Onshape.',
+    github: 'https://github.com/jasmehar-k/VisionCAD',
+    devpost: 'https://devpost.com/software/visioncad',
+    award: '2nd Place at EngHacks 2026',
+  },
+  {
+    name: 'BREAD.board',
+    image: breadboard,
+    tags: ['FastAPI', 'LiveKit', 'WebSockets', 'OpenAI', 'Computer Vision'],
+    description:
+      'Real-time circuit-building assistant that streams live video to analyze breadboard assembly, interpret schematics, and deliver step-by-step guidance and answer user questions.',
+    github: 'https://github.com/jasmehar-k/BREAD.board',
+    devpost: 'https://devpost.com/software/circuit-build',
+  },
+  {
+    name: 'FOOT.print',
+    image: foot_print,
+    tags: ['Python', 'Gemini', 'Twelve Labs', 'YOLOv8', 'Blender'],
+    description:
+      'AI pipeline that processes a video of a room to extract object positions, estimates depth and dimensions, and generates a validated, feng shui–optimized 3D room layout rendered in Blender.',
+    devpost: 'https://devpost.com/software/foot-print',
+  },
+  {
+    name: 'Breast Cancer Prediction Model',
+    image: prediction,
+    tags: ['Python', 'PyTorch', 'Machine Learning', 'Neural Networks'],
+    description:
+      'Neural network built in PyTorch classified breast cancer tumors with 96% accuracy, optimized using binary cross-entropy loss and the Adam optimizer.',
+    github: 'https://github.com/jasmehar-k/breast-cancer-prediction',
+  },
+  {
+    name: 'Road Traffic Simulation',
+    image: intersection,
+    tags: ['Java', 'OOP', 'Multi-threading', 'AWT Graphics'],
+    description:
+      'Multi-threaded simulator for a 4-way intersection, optimizing traffic light durations with realistic driver behaviors modeled from real-world data.',
+    github: 'https://github.com/jasmehar-k/traffic-simulation',
+  },
+  {
+    name: 'Recipe Finder',
+    image: project_recipeFinder,
+    tags: ['Python', 'Web Scraping', 'webbrowser', 'googlesearch', 'Beautiful-Soup'],
+    description:
+      'Web app that finds recipes based on user input by scraping and filtering online sources for relevant ingredient and instruction data.',
+    devpost: 'https://devpost.com/software/recipe-finder-xed0oz',
+  },
+  {
+    name: 'Portfolio Website (this site!)',
+    image: portfolio,
+    tags: ['React.js', 'styled-components', 'Three.js', 'Web Design'],
+    description:
+      'Super Mario Bros themed portfolio with a 3D arcade intro, a playable hero level, and world-themed sections, built with React, three.js, and styled-components.',
+    github: 'https://github.com/jasmehar-k/jasmehar-k.github.io',
+  },
+];
 
 const ProjectsSection = () => {
   return (
     <ProjectsContainer id="projects">
-      <Title>Projects</Title>
+      {BUBBLES.map((bubble, i) => (
+        <Bubble
+          key={i}
+          style={{ left: bubble.left }}
+          $size={bubble.size}
+          $duration={bubble.duration}
+          $delay={bubble.delay}
+        />
+      ))}
+
+      <WorldPlaque world="2-2" name="PROJECTS" light />
+
       <ProjectGrid>
-        <ProjectCard>
-          <LinkIcons>
-              <ProjectLinkIcon href="https://github.com/jasmehar-k/pelican" target="_blank" rel="noopener noreferrer">
-                  <FaGithub />
-              </ProjectLinkIcon>
-          </LinkIcons>
-            <ProjectName>Pelican</ProjectName>
-                <SkillTags>
-                    <SkillTag>Python</SkillTag>
-                    <SkillTag>LangGraph</SkillTag>
-                    <SkillTag>Polars</SkillTag>
-                    <SkillTag>DuckDB</SkillTag>
-                    <SkillTag>FastAPI</SkillTag>
-                    <SkillTag>React</SkillTag>
-                    <SkillTag>CVXPy</SkillTag>
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={pelican} alt="Pelican" />
-                </ImageWrapper>
-                <Description>
-                Autonomous factor research platform where LLM agents search arXiv, generate alpha signal code, and run point-in-time backtests, accepting signals with IC t-stat ≥ 1.5. Accepted signals feed a CVXPy mean-variance portfolio optimizer with an Almgren-Chriss transaction cost model.
-                </Description>
-            </ProjectCard>
-
-        <ProjectCard>
-          <AwardBadge aria-label="dill.pkl award">
-            <FaAward />
-            <AwardTooltip>{projectAwards.dillPkl}</AwardTooltip>
-          </AwardBadge>
-          <LinkIcons>
-            <ProjectLinkIcon href={projectGitHubLinks.dillPkl} target="_blank" rel="noopener noreferrer" aria-label="dill.pkl GitHub repository">
-              <FaGithub />
-            </ProjectLinkIcon>
-            <ProjectLinkIcon href="https://devpost.com/software/dill-pkl" target="_blank" rel="noopener noreferrer" aria-label="dill.pkl Devpost page">
-              <Icon icon="simple-icons:devpost"  />
-            </ProjectLinkIcon>
-          </LinkIcons>
-              <ProjectName>dill.pkl</ProjectName>
-              <SkillTags>
-                  <SkillTag>Optuna</SkillTag>
-                  <SkillTag>FastAPI</SkillTag>
-                  <SkillTag>Python</SkillTag>
-                  <SkillTag>TypeScript</SkillTag>
-              </SkillTags>
-              <ImageWrapper>
-                  <img src={dill_pkl} alt="dill.pkl" />
-              </ImageWrapper>
-              <Description>
-              Agentic web app that automates the full ML pipeline (data analysis, preprocessing, feature
-engineering, model selection, training, and evaluation) and outputs a deployable model.
-                </Description>
-      </ProjectCard>
-        <ProjectCard>
-            <LinkIcons>
-                <ProjectLinkIcon href="https://github.com/jasmehar-k/braillinator" target="_blank" rel="noopener noreferrer">
+        {PROJECTS.map((project, index) => (
+          <ProjectCard key={project.name}>
+            {project.award && (
+              <AwardBadge aria-label={`${project.name} award`}>
+                <FaAward />
+                <AwardTooltip>{project.award}</AwardTooltip>
+              </AwardBadge>
+            )}
+            <LevelHeader>
+              <LevelChip>{`LV ${index + 1}`}</LevelChip>
+              <ProjectName>{project.name}</ProjectName>
+              <LinkIcons>
+                {project.github && (
+                  <ProjectLinkIcon
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${project.name} GitHub repository`}
+                  >
                     <FaGithub />
-                </ProjectLinkIcon>
-            </LinkIcons>
-            <ProjectName>Braillinator</ProjectName>
-                <SkillTags>
-                    <SkillTag>Python</SkillTag>
-                    <SkillTag>PyTorch</SkillTag>
-                    <SkillTag>U-Net</SkillTag>
-                    <SkillTag>OCR</SkillTag>
-                    <SkillTag>Raspberry Pi</SkillTag>
-                    <SkillTag>React Native</SkillTag>
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={braillinator} alt="Braillinator" />
-                </ImageWrapper>
-                <Description>
-                Real-time text-to-Braille system using a React Native app and Raspberry Pi that converts phone camera images into tactile Braille output, with a conditional U-Net that sharpens degraded photos before Tesseract OCR to reduce miss rates by up to 46%.
-                </Description>
-        </ProjectCard>
-      <ProjectCard>
-          <LinkIcons>
-            <ProjectLinkIcon href={projectGitHubLinks.iClick} target="_blank" rel="noopener noreferrer" aria-label="iClick GitHub repository">
-              <FaGithub />
-            </ProjectLinkIcon>
-            <ProjectLinkIcon href="https://devpost.com/software/iclick-4rynjv" target="_blank" rel="noopener noreferrer" aria-label="iClick Devpost page">
-              <Icon icon="simple-icons:devpost"  />
-            </ProjectLinkIcon>
-          </LinkIcons>
-              <ProjectName>iClick</ProjectName>
-              <SkillTags>
-                  <SkillTag>Gradient Boosting Regression</SkillTag>
-                  <SkillTag>Supervised Learning</SkillTag>
-                  <SkillTag>Computer Vision</SkillTag>
-                  <SkillTag>Latency Optimization</SkillTag>
-              </SkillTags>
+                  </ProjectLinkIcon>
+                )}
+                {project.devpost && (
+                  <ProjectLinkIcon
+                    href={project.devpost}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${project.name} Devpost page`}
+                  >
+                    <Icon icon="simple-icons:devpost" />
+                  </ProjectLinkIcon>
+                )}
+              </LinkIcons>
+            </LevelHeader>
+            <CardBody>
               <ImageWrapper>
-                  <img src={iclick} alt="iClick" />
+                <img src={project.image} alt={project.name} />
               </ImageWrapper>
-              <Description>
-                System that enables hands-free computer control using precise cursor control through eye tracking, gesture recognition, and streaming speech-to-text. 
-              </Description>
-      </ProjectCard>
-      <ProjectCard>
-          <AwardBadge aria-label="VisionCAD award">
-            <FaAward />
-            <AwardTooltip>{projectAwards.visionCAD}</AwardTooltip>
-          </AwardBadge>
-          <LinkIcons>
-            <ProjectLinkIcon href={projectGitHubLinks.visionCAD} target="_blank" rel="noopener noreferrer" aria-label="VisionCAD GitHub repository">
-              <FaGithub />
-            </ProjectLinkIcon>
-            <ProjectLinkIcon href="https://devpost.com/software/visioncad" target="_blank" rel="noopener noreferrer" aria-label="VisionCAD Devpost page">
-              <Icon icon="simple-icons:devpost" />
-            </ProjectLinkIcon>
-          </LinkIcons>
-          <ProjectName>VisionCAD</ProjectName>
-          <SkillTags>
-              <SkillTag>FastAPI</SkillTag>
-              <SkillTag>CADQuery</SkillTag>
-              <SkillTag>Python</SkillTag>
-              <SkillTag>Vue.js</SkillTag>
-          </SkillTags>
-          <ImageWrapper>
-              <img src={visionCAD} alt="VisionCAD" />
-          </ImageWrapper>
-          <Description>
-              Converts hand-drawn sketches into 3D CAD models by analyzing uploaded images with an LLM, extracting geometry, and generating a downloadable STEP file openable in SolidWorks or Onshape.
-          </Description>
-      </ProjectCard>
-      <ProjectCard>
-          <LinkIcons>
-            <ProjectLinkIcon href={projectGitHubLinks.breadBoard} target="_blank" rel="noopener noreferrer" aria-label="BREAD.board GitHub repository">
-              <FaGithub />
-            </ProjectLinkIcon>
-            <ProjectLinkIcon href="https://devpost.com/software/circuit-build" target="_blank" rel="noopener noreferrer" aria-label="BREAD.board Devpost page">
-              <Icon icon="simple-icons:devpost"  />
-            </ProjectLinkIcon>
-          </LinkIcons>
-              <ProjectName>BREAD.board</ProjectName>
               <SkillTags>
-                <SkillTag>FastAPI</SkillTag>
-                <SkillTag>LiveKit</SkillTag>
-                <SkillTag>WebSockets</SkillTag>
-                <SkillTag>OpenAI</SkillTag>
-                <SkillTag>Computer Vision</SkillTag>
+                {project.tags.map((tag) => (
+                  <SkillTag key={tag}>{tag}</SkillTag>
+                ))}
               </SkillTags>
-              <ImageWrapper>
-                  <img src={breadboard} alt="BREAD.board" />
-              </ImageWrapper>
-              <Description>
-                Real-time circuit-building assistant that streams live video to analyze breadboard assembly, interpret schematics, and deliver step-by-step guidance and answer user questions.              </Description>
-        </ProjectCard>
-        <ProjectCard>
-            <LinkIcons>
-                <ProjectLinkIcon href="https://devpost.com/software/foot-print" target="_blank" rel="noopener noreferrer">
-                    <Icon icon="simple-icons:devpost"  />
-                </ProjectLinkIcon>
-            </LinkIcons>
-            <ProjectName>FOOT.print</ProjectName>
-                <SkillTags>
-                    <SkillTag>Python</SkillTag>
-                    <SkillTag>Gemini</SkillTag>
-                    <SkillTag>Twelve Labs</SkillTag>
-                    <SkillTag>YOLOv8</SkillTag>
-                    <SkillTag>Blender</SkillTag>
-
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={foot_print} alt="FOOT.print" />
-                </ImageWrapper>
-                <Description>
-                AI pipeline that processes a video of a room to extract object positions, estimates depth and dimensions, and generates a validated, feng shui–optimized 3D room layout rendered in Blender.
-                </Description>
-        </ProjectCard>
-                <ProjectCard>
-                    <LinkIcons>
-                        <ProjectLinkIcon href="https://github.com/jasmehar-k/breast-cancer-prediction" target="_blank" rel="noopener noreferrer">
-                            <FaGithub />
-                        </ProjectLinkIcon>
-                    </LinkIcons>
-                <ProjectName>Breast Cancer Prediction Model</ProjectName>
-                <SkillTags>
-                    <SkillTag>Python</SkillTag>
-                    <SkillTag>PyTorch</SkillTag>
-                    <SkillTag>Machine Learning</SkillTag>
-                    <SkillTag>Neural Networks</SkillTag>
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={prediction} alt="Prediction Model" />
-                </ImageWrapper>
-                <Description>
-                Neural network built in PyTorch classified breast cancer tumors with 96% accuracy, optimized using binary cross-entropy loss and the Adam optimizer.                </Description>
-        </ProjectCard>
-        <ProjectCard>
-            <LinkIcons>
-                <ProjectLinkIcon href="https://github.com/jasmehar-k/traffic-simulation" target="_blank" rel="noopener noreferrer">
-                    <FaGithub />
-                </ProjectLinkIcon>
-            </LinkIcons>
-                <ProjectName>Road Traffic Simulation</ProjectName>
-                <SkillTags>
-                    <SkillTag>Java</SkillTag>
-                    <SkillTag>OOP</SkillTag>
-                    <SkillTag>Multi-threading</SkillTag>
-                    <SkillTag>AWT Graphics</SkillTag>
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={intersection} alt="Traffic Simulation" />
-                </ImageWrapper>
-                <Description>
-                Multi-threaded simulator for a 4-way intersection, optimizing traffic light durations with realistic driver behaviors modeled from real-world data.                </Description>
-        </ProjectCard>
-        <ProjectCard>
-            <LinkIcons>
-                <ProjectLinkIcon href="https://devpost.com/software/recipe-finder-xed0oz" target="_blank" rel="noopener noreferrer">
-                    <Icon icon="simple-icons:devpost"  />
-                </ProjectLinkIcon>
-            </LinkIcons>
-                <ProjectName>Recipe Finder</ProjectName>
-                <SkillTags>
-                    <SkillTag>Python</SkillTag>
-                    <SkillTag>Web Scraping</SkillTag>
-                    <SkillTag>webbrowser</SkillTag>
-                    <SkillTag>googlesearch</SkillTag>
-                    <SkillTag>Beautiful-Soup</SkillTag>
-
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={recipeFinder} alt="Recipe Finder" />
-                </ImageWrapper>
-                <Description>
-                    Web app that finds recipes based on user input by scraping and filtering online sources for relevant ingredient and instruction data. </Description>
-        </ProjectCard>
-        <ProjectCard>
-            <LinkIcons>
-                <ProjectLinkIcon href="https://github.com/jasmehar-k/jasmehar-k.github.io" target="_blank" rel="noopener noreferrer">
-                    <FaGithub />
-                </ProjectLinkIcon>
-            </LinkIcons>
-                <ProjectName>Portfolio Website (this site!)</ProjectName>
-                <SkillTags>
-                    <SkillTag>React.js</SkillTag>
-                    <SkillTag>styled-components</SkillTag>
-                    <SkillTag>Web Design</SkillTag>
-                    <SkillTag>Framer Motion</SkillTag>
-                </SkillTags>
-                <ImageWrapper>
-                    <img src={portfolio} alt="Portfolio" />
-                </ImageWrapper>
-                <Description>
-                Portfolio featuring intuitive section navigation and fully responsive layouts, ensuring a consistent user experience across all devices. </Description>
-        </ProjectCard>
+              <Description>{project.description}</Description>
+            </CardBody>
+          </ProjectCard>
+        ))}
       </ProjectGrid>
     </ProjectsContainer>
   );
