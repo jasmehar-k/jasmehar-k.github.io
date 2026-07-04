@@ -1,4 +1,5 @@
-import GlobalStyle from './components/GlobalStyle'; 
+import GlobalStyle from './components/GlobalStyle';
+import IntroGate from './components/IntroGate';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
@@ -11,14 +12,15 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <Navbar />
-      <HeroSection />
-      <AboutSection id="about" />
-      <SkillsSection id="skills" />
-      <ExperienceSection id="experience" />
-      <ProjectsSection id="projects" />
-      <MarioEndScene />
-
+      <IntroGate>
+        <Navbar />
+        <HeroSection />
+        <AboutSection id="about" />
+        <SkillsSection id="skills" />
+        <ExperienceSection id="experience" />
+        <ProjectsSection id="projects" />
+        <MarioEndScene />
+      </IntroGate>
     </>
   );
 }

@@ -1,6 +1,11 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+  :root {
+    /* used by the arcade intro overlay */
+    --font-pixel: 'Press Start 2P', cursive;
+  }
+
   /* Remove horizontal scroll */
   html, body {
     margin: 0;
