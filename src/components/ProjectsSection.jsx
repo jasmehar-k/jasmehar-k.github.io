@@ -4,6 +4,7 @@ import styled, { keyframes } from 'styled-components';
 import { FaAward, FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 import WorldPlaque from './WorldPlaque';
+import { tiles } from '../utils/pixelArt';
 
 import project_recipeFinder from '../assets/recipe_finder.png';
 import intersection from '../assets/intersection.png';
@@ -26,9 +27,63 @@ const rise = keyframes`
 
 const ProjectsContainer = styled.section`
   position: relative;
-  background: linear-gradient(180deg, var(--water) 0%, var(--water-deep) 100%);
-  padding: 5rem 2rem 6rem;
+  background: #2048e8;
+  padding: 0 2rem 13rem;
   overflow: hidden;
+`;
+
+/* strip of sky + scalloped wave crest — world 2-2 water surface */
+const SkyBand = styled.div`
+  height: 52px;
+  margin: 0 -2rem;
+  background: var(--sky);
+`;
+
+const WaveStrip = styled.div`
+  height: 48px;
+  margin: 0 -2rem 4rem;
+  background-repeat: repeat-x;
+  background-position: top;
+  background-size: 48px 24px;
+  image-rendering: pixelated;
+`;
+
+const Seabed = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  background-color: #000;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
+  z-index: 2;
+`;
+
+const Coral = styled.img`
+  position: absolute;
+  bottom: 90px;
+  image-rendering: pixelated;
+  pointer-events: none;
+  z-index: 2;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const FloatingCoin = styled.img`
+  position: absolute;
+  width: 26px;
+  image-rendering: pixelated;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.95;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Bubble = styled.div`
@@ -56,13 +111,12 @@ const ProjectGrid = styled.div`
 `;
 
 const ProjectCard = styled.div`
-  background: #fffef7;
-  border: 4px solid #10102a;
+  background: #000;
+  border: 4px solid #fcfcfc;
   width: 310px;
   padding: 0 0 1.2rem;
   position: relative;
   transition: transform 0.25s ease;
-  box-shadow: 8px 8px 0 rgba(6, 20, 60, 0.65);
   display: flex;
   flex-direction: column;
 
@@ -83,13 +137,13 @@ const LevelHeader = styled.div`
   gap: 0.6rem;
   padding: 0.7rem 0.9rem;
   background: var(--gold);
-  border-bottom: 4px solid #10102a;
+  border-bottom: 4px solid #fcfcfc;
 `;
 
 const LevelChip = styled.span`
   font-family: var(--font-pixel);
   font-size: 0.42rem;
-  background: #10102a;
+  background: #000;
   color: var(--gold);
   padding: 0.3rem 0.4rem;
   white-space: nowrap;
@@ -100,7 +154,7 @@ const ProjectName = styled.h3`
   font-family: var(--font-pixel);
   font-size: 0.62rem;
   line-height: 1.5;
-  color: #10102a;
+  color: #000;
   flex: 1;
 `;
 
@@ -119,18 +173,18 @@ const SkillTags = styled.div`
 `;
 
 const SkillTag = styled.span`
-  background: #e6f2ff;
-  color: #10306a;
+  background: #000;
+  color: var(--gold);
   padding: 0.28rem 0.45rem;
   font-family: var(--font-pixel);
-  font-size: 0.42rem;
-  border: 2px solid #10306a;
+  font-size: 0.4rem;
+  border: 2px solid var(--gold);
 `;
 
 const ImageWrapper = styled.div`
   overflow: hidden;
   margin-bottom: 1rem;
-  border: 3px solid #10102a;
+  border: 3px solid #fcfcfc;
 
   img {
     width: 100%;
@@ -141,10 +195,10 @@ const ImageWrapper = styled.div`
 
 const Description = styled.p`
   margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: #26263a;
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  line-height: 2;
+  color: #fcfcfc;
 `;
 
 const LinkIcons = styled.div`
@@ -153,7 +207,7 @@ const LinkIcons = styled.div`
 `;
 
 const ProjectLinkIcon = styled.a`
-  color: #10102a;
+  color: #000;
   font-size: 1rem;
   display: inline-flex;
   align-items: center;
@@ -191,17 +245,15 @@ const AwardTooltip = styled.span`
   position: absolute;
   bottom: calc(100% + 0.85rem);
   left: -0.25rem;
-  min-width: 170px;
-  max-width: 230px;
+  min-width: 180px;
+  max-width: 240px;
   padding: 0.6rem 0.7rem;
-  background: #fffef7;
-  color: #10102a;
-  border: 2px solid #10102a;
-  box-shadow: 4px 4px 0 #10102a;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 0.72rem;
-  line-height: 1.45;
+  background: #000;
+  color: #fcfcfc;
+  border: 2px solid #fcfcfc;
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  line-height: 1.9;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
@@ -319,8 +371,13 @@ const PROJECTS = [
 ];
 
 const ProjectsSection = () => {
+  const T = tiles();
+
   return (
     <ProjectsContainer id="projects">
+      <SkyBand />
+      <WaveStrip style={{ backgroundImage: `url(${T.wave})` }} />
+
       {BUBBLES.map((bubble, i) => (
         <Bubble
           key={i}
@@ -330,6 +387,11 @@ const ProjectsSection = () => {
           $delay={bubble.delay}
         />
       ))}
+
+      <FloatingCoin src={T.coin} style={{ left: '5%', top: '30%' }} alt="" />
+      <FloatingCoin src={T.coin} style={{ left: '7%', top: '44%' }} alt="" />
+      <FloatingCoin src={T.coin} style={{ right: '5%', top: '58%' }} alt="" />
+      <FloatingCoin src={T.coin} style={{ right: '7%', top: '72%' }} alt="" />
 
       <WorldPlaque world="2-2" name="PROJECTS" light />
 
@@ -382,6 +444,11 @@ const ProjectsSection = () => {
           </ProjectCard>
         ))}
       </ProjectGrid>
+
+      <Coral src={T.coral} style={{ left: '4%', width: '96px' }} alt="" />
+      <Coral src={T.coral} style={{ left: '12%', width: '64px' }} alt="" />
+      <Coral src={T.coral} style={{ right: '6%', width: '88px' }} alt="" />
+      <Seabed style={{ backgroundImage: `url(${T.seabed})` }} />
     </ProjectsContainer>
   );
 };

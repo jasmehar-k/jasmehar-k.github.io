@@ -31,7 +31,8 @@ const GlobalStyle = createGlobalStyle`
     --hud-h: 56px;
 
     --font-pixel: 'Press Start 2P', cursive;
-    --font-body: 'Rubik', -apple-system, sans-serif;
+    /* full commitment: body copy is pixel font too, straight from the game */
+    --font-body: 'Press Start 2P', cursive;
   }
 
   html, body {

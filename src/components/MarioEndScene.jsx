@@ -1,23 +1,34 @@
-// MarioEndScene.jsx — world 8-4 finale: flagpole, fireworks, castle, contact
+// MarioEndScene.jsx — end of level: run in, grab the pole, flag slides, walk into the castle
 import React, { useRef, useEffect, useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
-import mario from '../assets/mario_run.gif';
+import marioRun from '../assets/mario_run.gif';
+import marioIdle from '../assets/mario_slide.png';
 import castle from '../assets/castle.png';
-import ground from '../assets/ground.png';
+import cloud from '../assets/cloud.png';
 import webring from '../assets/webring.png';
 import { sfx } from '../hooks/useSound';
+import { tiles } from '../utils/pixelArt';
 
-const GROUND_H = 40;
+const GROUND_H = 96;
 const POLE_H = 320;
+const POLE_RIGHT = 430;      // pole distance from right edge
+const MARIO_AT_POLE = 462;   // mario stops just left of the pole
+const MARIO_DOOR = 200;      // castle door position
+const GRAB_BOTTOM = GROUND_H + 195;
 
-const walk = keyframes`
-  0%   { left: -60px; }
-  100% { left: calc(100% - 430px); }
-`;
+// phase timings (ms)
+const SEQUENCE = [
+  ['run', 2400],
+  ['grab', 350],
+  ['slide', 1300],
+  ['pause', 420],
+  ['walk', 1500],
+  ['in', 450],
+];
 
 const burst = keyframes`
   0%   { transform: scale(0.1); opacity: 0; }
@@ -26,59 +37,72 @@ const burst = keyframes`
   100% { transform: scale(1.3); opacity: 0; }
 `;
 
-const twinkle = keyframes`
-  0%, 100% { opacity: 0.35; }
-  50%      { opacity: 1; }
-`;
-
 const SceneWrapper = styled.section`
   position: relative;
   width: 100%;
   min-height: 92vh;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--water-deep) 0%, #0f1440 22%, #1a2258 100%);
+  background: var(--sky);
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const Star = styled.div`
+const CloudImg = styled.img`
   position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #fffef7;
-  animation: ${twinkle} ${({ $duration }) => $duration}s ease-in-out infinite;
+  image-rendering: pixelated;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const Scenery = styled.img`
+  position: absolute;
+  bottom: ${GROUND_H}px;
+  image-rendering: pixelated;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const ContentColumn = styled.div`
   position: relative;
-  z-index: 5;
+  z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 3rem 1.5rem 10rem;
-  max-width: 620px;
+  padding: 3rem 1.5rem 11rem;
+  max-width: 600px;
+  margin-right: min(30vw, 480px);
+
+  @media (max-width: 900px) {
+    margin-right: 0;
+  }
 `;
 
 const BigTitle = styled.h2`
   margin: 0 0 1.4rem;
   font-family: var(--font-pixel);
-  font-size: clamp(1rem, 2.6vw, 1.7rem);
+  font-size: clamp(1rem, 2.6vw, 1.6rem);
   color: #fffef7;
-  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.55);
 `;
 
 const FinalMessage = styled.p`
   margin: 0 0 1.8rem;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.8;
-  color: rgba(255, 254, 247, 0.9);
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  line-height: 2.3;
+  color: #fcfcfc;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
 
   a {
     color: var(--gold);
-    font-weight: 600;
   }
 `;
 
@@ -94,6 +118,7 @@ const IconButton = styled.a`
   color: #fffef7;
   font-size: 1.6rem;
   transition: transform 0.2s, color 0.2s;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
 
   &:hover {
     transform: scale(1.25);
@@ -123,7 +148,7 @@ const Firework = styled.div`
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  border: 4px dotted var(--gold);
+  border: 4px dotted #fffef7;
   opacity: 0;
   z-index: 2;
 
@@ -133,7 +158,7 @@ const Firework = styled.div`
       animation: ${burst} 1.7s ease-out ${$delay}s infinite;
     `}
 
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     display: none;
   }
 `;
@@ -141,23 +166,23 @@ const Firework = styled.div`
 const FlagPole = styled.div`
   position: absolute;
   bottom: ${GROUND_H}px;
-  right: 360px;
-  width: 8px;
+  right: ${POLE_RIGHT}px;
+  width: 10px;
   height: ${POLE_H}px;
-  background: #43b047;
-  border: 3px solid #000;
+  background: #80d010;
+  border: 2px solid #000;
   z-index: 3;
 
   &::before {
     content: '';
     position: absolute;
-    top: -18px;
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: radial-gradient(circle at 38% 38%, #ffe87a, #e8a000);
+    background: #80d010;
     border: 3px solid #000;
   }
 
@@ -166,122 +191,120 @@ const FlagPole = styled.div`
   }
 `;
 
-const Flag = styled.div`
-  position: absolute;
-  right: 8px;
-  top: ${({ $down }) => ($down ? POLE_H - 90 : 10)}px;
-  width: 0;
-  height: 0;
-  border-top: 26px solid transparent;
-  border-bottom: 26px solid transparent;
-  border-right: 62px solid #fffef7;
-  filter: drop-shadow(-2px 2px 0 rgba(0, 0, 0, 0.45));
-  transition: top 1.6s ease-in;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 22px;
-    top: -9px;
-    width: 18px;
-    height: 18px;
-    background: var(--mario-red);
-  }
-`;
-
-const Ground = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: ${GROUND_H}px;
-  background-image: url(${ground});
-  background-repeat: repeat-x;
-  background-size: contain;
-  z-index: 4;
-`;
-
-const Mario = styled.img`
+const FlagImg = styled.img`
   position: absolute;
   bottom: ${GROUND_H}px;
-  width: 60px;
-  height: auto;
+  right: ${POLE_RIGHT + 8}px;
+  width: 56px;
   image-rendering: pixelated;
-  z-index: 4;
-
-  ${({ $animate }) =>
-    $animate
-      ? css`
-          animation: ${walk} 4s linear forwards;
-        `
-      : css`
-          left: -60px;
-        `}
+  z-index: 3;
 
   @media (max-width: 900px) {
     display: none;
   }
 `;
 
-const Castle = styled.img`
+const GroundStrip = styled.div`
   position: absolute;
-  bottom: ${GROUND_H}px;
-  right: 4%;
-  height: 340px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: ${GROUND_H}px;
+  background-repeat: repeat;
+  background-size: 48px 48px;
   image-rendering: pixelated;
-  z-index: 3;
+  z-index: 4;
+`;
 
-  @media (max-width: 1024px) {
-    height: 280px;
-  }
+const MarioImg = styled.img`
+  position: absolute;
+  width: 58px;
+  height: auto;
+  image-rendering: pixelated;
+  z-index: 4;
 
-  @media (max-width: 768px) {
-    height: 200px;
-    right: 50%;
-    transform: translateX(50%);
-    opacity: 0.55;
+  @media (max-width: 900px) {
+    display: none;
   }
 `;
 
-const STARS = [
-  { left: '8%', top: '12%', duration: 2.4 },
-  { left: '22%', top: '28%', duration: 3.1 },
-  { left: '35%', top: '9%', duration: 2.8 },
-  { left: '52%', top: '20%', duration: 3.4 },
-  { left: '67%', top: '10%', duration: 2.2 },
-  { left: '78%', top: '30%', duration: 3.0 },
-  { left: '90%', top: '15%', duration: 2.6 },
-  { left: '14%', top: '45%', duration: 3.6 },
-  { left: '60%', top: '40%', duration: 2.9 },
-];
+const CastleImg = styled.img`
+  position: absolute;
+  bottom: ${GROUND_H}px;
+  right: 40px;
+  height: 320px;
+  image-rendering: pixelated;
+  z-index: 5;
+
+  @media (max-width: 1024px) {
+    height: 260px;
+  }
+
+  @media (max-width: 900px) {
+    height: 220px;
+    right: 50%;
+    transform: translateX(50%);
+    opacity: 0.6;
+  }
+`;
+
+function marioStyleFor(phase) {
+  const atPole = `calc(100% - ${MARIO_AT_POLE}px)`;
+  const atDoor = `calc(100% - ${MARIO_DOOR}px)`;
+  switch (phase) {
+    case 'run':
+      return { left: atPole, bottom: GROUND_H, transition: 'left 2.4s linear' };
+    case 'grab':
+      return { left: atPole, bottom: GRAB_BOTTOM, transition: 'bottom 0.3s ease-out' };
+    case 'slide':
+      return { left: atPole, bottom: GROUND_H, transition: 'bottom 1.25s linear' };
+    case 'pause':
+      return { left: atPole, bottom: GROUND_H, transition: 'none' };
+    case 'walk':
+      return { left: atDoor, bottom: GROUND_H, transition: 'left 1.5s linear' };
+    case 'in':
+    case 'done':
+      return { left: atDoor, bottom: GROUND_H, opacity: 0, transition: 'opacity 0.45s ease' };
+    default:
+      return { left: '-70px', bottom: GROUND_H, transition: 'none' };
+  }
+}
 
 const MarioEndScene = () => {
   const sectionRef = useRef(null);
-  const [animate, setAnimate] = useState(false);
-  const [flagDown, setFlagDown] = useState(false);
-  const timeoutRef = useRef(null);
-  const flagTimerRef = useRef(null);
-  const playedRef = useRef(false);
+  const timersRef = useRef([]);
+  const [phase, setPhase] = useState('idle');
+  const T = tiles();
+
+  const clearTimers = () => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+  };
+
+  const playSequence = () => {
+    clearTimers();
+    setPhase('idle');
+    let elapsed = 150; // brief reset frame before running
+    SEQUENCE.forEach(([name, duration]) => {
+      timersRef.current.push(
+        setTimeout(() => {
+          setPhase(name);
+          if (name === 'slide') sfx.flag();
+        }, elapsed),
+      );
+      elapsed += duration;
+    });
+    timersRef.current.push(setTimeout(() => setPhase('done'), elapsed));
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setAnimate(false);
-          setFlagDown(false);
-          clearTimeout(timeoutRef.current);
-          clearTimeout(flagTimerRef.current);
-          timeoutRef.current = setTimeout(() => setAnimate(true), 100);
-          flagTimerRef.current = setTimeout(() => {
-            setFlagDown(true);
-            if (!playedRef.current) {
-              playedRef.current = true;
-              sfx.flag();
-            }
-          }, 3600);
+          playSequence();
         } else {
-          setAnimate(false);
-          setFlagDown(false);
-          playedRef.current = false;
+          clearTimers();
+          setPhase('idle');
         }
       },
       { threshold: 0.5 }
@@ -290,9 +313,9 @@ const MarioEndScene = () => {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => {
       observer.disconnect();
-      clearTimeout(timeoutRef.current);
-      clearTimeout(flagTimerRef.current);
+      clearTimers();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const replayIntro = () => {
@@ -305,22 +328,28 @@ const MarioEndScene = () => {
     window.location.reload();
   };
 
+  const flagDown = ['slide', 'pause', 'walk', 'in', 'done'].includes(phase);
+  const celebrating = ['in', 'done'].includes(phase);
+  const running = phase === 'run' || phase === 'walk';
+
   return (
     <SceneWrapper ref={sectionRef} id="end">
-      {STARS.map((star, i) => (
-        <Star key={i} style={{ left: star.left, top: star.top }} $duration={star.duration} />
-      ))}
+      <CloudImg src={cloud} style={{ top: '48px', left: '8%', width: '300px' }} alt="" />
+      <CloudImg src={cloud} style={{ top: '120px', right: '30%', width: '220px' }} alt="" />
+      <Scenery src={T.bush} style={{ left: '6%', width: '150px' }} alt="" />
 
-      <Firework style={{ right: '14%', top: '14%' }} $animate={flagDown} $delay={0} />
-      <Firework style={{ right: '26%', top: '26%' }} $animate={flagDown} $delay={0.6} />
-      <Firework style={{ right: '7%', top: '32%' }} $animate={flagDown} $delay={1.2} />
+      <Firework style={{ right: '16%', top: '12%' }} $animate={celebrating} $delay={0} />
+      <Firework style={{ right: '30%', top: '24%' }} $animate={celebrating} $delay={0.6} />
+      <Firework style={{ right: '8%', top: '30%' }} $animate={celebrating} $delay={1.2} />
 
       <ContentColumn>
-        <BigTitle>THANKS FOR PLAYING!</BigTitle>
+        <BigTitle>THANK YOU FOR VISITING!</BigTitle>
         <FinalMessage>
-          Thanks for visiting my portfolio. Feel free to reach out at{' '}
-          <a href="mailto:jasmehar.kr@gmail.com">jasmehar.kr@gmail.com</a> — I&apos;m always happy to chat
-          about AI, software, or co-op opportunities.
+          BUT MORE OF MY WORK IS IN ANOTHER CASTLE...
+          <br />
+          <br />
+          REACH ME AT <a href="mailto:jasmehar.kr@gmail.com">JASMEHAR.KR@GMAIL.COM</a> TO CHAT ABOUT AI,
+          SOFTWARE, OR CO-OP OPPORTUNITIES.
         </FinalMessage>
         <IconButtonRow>
           <IconButton
@@ -361,12 +390,22 @@ const MarioEndScene = () => {
         </ReplayButton>
       </ContentColumn>
 
-      <FlagPole>
-        <Flag $down={flagDown} />
-      </FlagPole>
-      <Mario src={mario} alt="Mario walking to the flagpole" $animate={animate} />
-      <Castle src={castle} alt="Castle" />
-      <Ground />
+      <FlagImg
+        src={T.flag}
+        alt=""
+        style={{
+          bottom: flagDown ? GROUND_H + 14 : GROUND_H + POLE_H - 66,
+          transition: 'bottom 1.25s linear',
+        }}
+      />
+      <FlagPole />
+      <MarioImg
+        src={running ? marioRun : marioIdle}
+        alt="Mario finishing the level"
+        style={marioStyleFor(phase)}
+      />
+      <CastleImg src={castle} alt="Castle" />
+      <GroundStrip style={{ backgroundImage: `url(${T.ground})` }} />
     </SceneWrapper>
   );
 };

@@ -3,29 +3,36 @@ import styled from 'styled-components';
 import myPhoto from '../assets/photo.png';
 import WorldPlaque from './WorldPlaque';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { tiles } from '../utils/pixelArt';
 
 const AboutWrapper = styled.section`
   position: relative;
   background: var(--sky);
-  padding: 6rem 2rem 7rem;
+  padding: 6rem 2rem 12rem;
   min-height: 60vh;
   overflow: hidden;
 `;
 
-const Bush = styled.div`
+const Scenery = styled.img`
   position: absolute;
-  bottom: 0;
-  width: ${({ $w }) => $w}px;
-  height: ${({ $h }) => $h}px;
-  background: var(--pipe);
-  border: 4px solid #2f2f2f;
-  border-bottom: none;
-  border-radius: ${({ $h }) => $h}px ${({ $h }) => $h}px 0 0;
-  opacity: 0.9;
+  bottom: 96px;
+  image-rendering: pixelated;
+  pointer-events: none;
 
   @media (max-width: 768px) {
     display: none;
   }
+`;
+
+const GroundStrip = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
 `;
 
 const Content = styled.div`
@@ -44,10 +51,9 @@ const Content = styled.div`
 const PhotoFrame = styled.div`
   position: relative;
   flex-shrink: 0;
-  padding: 10px;
-  background: #fffef7;
-  border: 4px solid #2f2f2f;
-  box-shadow: 8px 8px 0 rgba(47, 47, 47, 0.45);
+  padding: 8px;
+  background: #fcfcfc;
+  border: 4px solid #000;
 `;
 
 const Photo = styled.div`
@@ -66,48 +72,23 @@ const FrameTag = styled.div`
   padding: 0.35rem 0.7rem;
   background: var(--mario-red);
   color: #fff;
-  border: 3px solid #2f2f2f;
+  border: 3px solid #000;
   font-family: var(--font-pixel);
   font-size: 0.5rem;
   white-space: nowrap;
 `;
 
-const DialogueBox = styled.div`
-  max-width: 620px;
-  background: #fffef7;
-  border: 4px solid #2f2f2f;
-  box-shadow: 8px 8px 0 rgba(47, 47, 47, 0.45);
-`;
-
-const DialogueHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.75rem 1.2rem;
-  background: var(--gold);
-  border-bottom: 4px solid #2f2f2f;
-  font-family: var(--font-pixel);
-  font-size: 0.55rem;
-  color: #2f2f2f;
-`;
-
-const CoinDot = styled.span`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #fffef7, #e8a000);
-  border: 2px solid #b8860b;
-`;
-
+/* white game text straight on the sky, like the game's story screens */
 const DialogueBody = styled.div`
-  padding: 1.5rem 1.6rem;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.75;
-  color: #2b2b35;
+  max-width: 620px;
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  line-height: 2.2;
+  color: #fcfcfc;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
 
   p {
-    margin: 0 0 1rem;
+    margin: 0 0 1.3rem;
   }
 
   p:last-child {
@@ -115,12 +96,14 @@ const DialogueBody = styled.div`
   }
 
   strong {
-    color: var(--mario-red);
+    color: var(--gold);
+    font-weight: normal;
   }
 `;
 
 const AboutSection = () => {
   const { ref, isVisible } = useScrollReveal();
+  const T = tiles();
 
   return (
     <AboutWrapper id="about">
@@ -130,34 +113,26 @@ const AboutSection = () => {
           <Photo />
           <FrameTag>PLAYER 1</FrameTag>
         </PhotoFrame>
-        <DialogueBox>
-          <DialogueHeader>
-            <CoinDot />
-            MESSAGE FROM JASMEHAR
-          </DialogueHeader>
-          <DialogueBody>
-            <p>
-              Hello! I&apos;m Jasmehar, a 2nd year <strong>Software Engineering</strong> student at the
-              University of Waterloo.
-            </p>
-            <p>
-              My interests lie around the intersection of <strong>artificial intelligence</strong>, software
-              development, and real-world problem solving. I&apos;ve built neural networks in PyTorch, worked on
-              computer vision applications, and explored information retrieval systems using LangGraph and
-              OpenSearch.
-            </p>
-            <p>
-              I enjoy developing end-to-end solutions that blend intelligent systems with clean, maintainable
-              code. I&apos;m excited to keep learning and applying cutting-edge technology to create meaningful
-              impact.
-            </p>
-          </DialogueBody>
-        </DialogueBox>
+        <DialogueBody>
+          <p>
+            HELLO! I&apos;M JASMEHAR, A 2ND YEAR <strong>SOFTWARE ENGINEERING</strong> STUDENT AT THE
+            UNIVERSITY OF WATERLOO.
+          </p>
+          <p>
+            MY INTERESTS LIE AT THE INTERSECTION OF <strong>ARTIFICIAL INTELLIGENCE</strong>, SOFTWARE
+            DEVELOPMENT, AND REAL-WORLD PROBLEM SOLVING. I&apos;VE BUILT NEURAL NETWORKS IN PYTORCH, WORKED ON
+            COMPUTER VISION, AND EXPLORED RETRIEVAL SYSTEMS USING LANGGRAPH AND OPENSEARCH.
+          </p>
+          <p>
+            I ENJOY BUILDING END-TO-END SOLUTIONS THAT BLEND INTELLIGENT SYSTEMS WITH CLEAN, MAINTAINABLE
+            CODE.
+          </p>
+        </DialogueBody>
       </Content>
 
-      <Bush style={{ left: '4%' }} $w={150} $h={52} />
-      <Bush style={{ left: '13%' }} $w={90} $h={38} />
-      <Bush style={{ right: '6%' }} $w={120} $h={46} />
+      <Scenery src={T.bush} style={{ left: '4%', width: '150px' }} alt="" />
+      <Scenery src={T.hill} style={{ right: '-1%', width: '260px' }} alt="" />
+      <GroundStrip style={{ backgroundImage: `url(${T.ground})` }} />
     </AboutWrapper>
   );
 };

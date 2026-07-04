@@ -2,24 +2,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { scroller } from 'react-scroll';
 
-import ground from '../assets/ground.png';
 import cloud from '../assets/cloud.png';
 import marioRun from '../assets/mario_run.gif';
 import marioIdle from '../assets/mario_slide.png';
 import shortPipe from '../assets/pipe.png';
+import piranhaPlant from '../assets/piranha_plant.png';
 import { sfx } from '../hooks/useSound';
+import { tiles } from '../utils/pixelArt';
 
 const MOVE_SPEED     = 220;   // px/s
 const JUMP_VEL       = 500;   // px/s upward
 const GRAVITY        = 1150;  // px/s²
 const MARIO_W        = 60;    // sprite width px
 const MARIO_H        = 74;    // sprite height px
-const GROUND_H       = 40;    // ground tile strip height px
+const GROUND_H       = 96;    // two rows of 48px ground tiles
 const PIPE_W         = 90;    // pipe sprite width px
 const PIPE_ENTER_SPD = 130;   // px/s Mario sinks into pipe
-const BLOCK_SIZE     = 46;    // ?-block px
-const BLOCK_BOTTOM   = 150;   // ?-block underside height above ground px
-const BLOCK_MAX_HITS = 5;     // coins per block before it empties
+const BLOCK_SIZE     = 48;    // block px
+const BLOCK_BOTTOM   = 150;   // block underside height above ground px
+const BLOCK_MAX_HITS = 5;     // coins per ? block before it empties
 
 // xPercent: pipe center as % of container width
 const PIPES = [
@@ -29,10 +30,13 @@ const PIPES = [
   { label: 'PROJECTS',   target: 'projects',   xPercent: 82, pipeH: 90 },
 ];
 
+// classic brick / ? / brick / ? / brick row, centered
 const BLOCKS = [
-  { xPercent: 44 },
-  { xPercent: 50 },
-  { xPercent: 56 },
+  { offset: -104, type: 'brick' },
+  { offset: -52,  type: 'q' },
+  { offset: 0,    type: 'brick' },
+  { offset: 52,   type: 'q' },
+  { offset: 104,  type: 'brick' },
 ];
 
 const bob = keyframes`
@@ -73,12 +77,11 @@ const HeroContainer = styled.section`
   overflow: hidden;
   background: var(--sky);
   font-family: var(--font-pixel);
-  border-bottom: 4px solid #2f2f2f;
 `;
 
 const TitleArea = styled.div`
   position: absolute;
-  top: clamp(7rem, 22vh, 13rem);
+  top: clamp(7rem, 20vh, 12rem);
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -92,7 +95,7 @@ const TypingTitle = styled.h1`
   color: #fff;
   margin: 0;
   font-size: clamp(0.95rem, 2.4vw, 1.9rem);
-  text-shadow: 4px 4px 0 #2f2f2f;
+  text-shadow: 4px 4px 0 #000;
   white-space: nowrap;
   overflow: hidden;
   border-right: 3px solid rgba(255,255,255,0.8);
@@ -102,12 +105,12 @@ const TypingTitle = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  margin: 1.1rem 0 0;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: clamp(0.85rem, 1.6vw, 1.05rem);
-  color: rgba(255, 255, 255, 0.94);
-  text-shadow: 1px 1px 0 rgba(47, 47, 47, 0.5);
+  margin: 1.2rem 0 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(0.42rem, 0.9vw, 0.55rem);
+  letter-spacing: 0.04em;
+  color: #fcfcfc;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
   opacity: 0;
   animation: fadeIn 0.8s ease 2.7s forwards;
 
@@ -122,6 +125,59 @@ const CloudImg = styled.img`
   z-index: 1;
   pointer-events: none;
   animation: ${driftLeftToRight} linear infinite;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const Scenery = styled.img`
+  position: absolute;
+  bottom: ${GROUND_H}px;
+  z-index: 1;
+  image-rendering: pixelated;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const goombaPatrol = keyframes`
+  0%    { left: 41%; transform: scaleX(1); }
+  49.9% { left: 53%; transform: scaleX(1); }
+  50%   { left: 53%; transform: scaleX(-1); }
+  100%  { left: 41%; transform: scaleX(-1); }
+`;
+
+const GoombaImg = styled.img`
+  position: absolute;
+  bottom: ${GROUND_H}px;
+  width: 42px;
+  image-rendering: pixelated;
+  z-index: 2;
+  pointer-events: none;
+  animation: ${goombaPatrol} 16s linear infinite;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const piranhaPeek = keyframes`
+  0%, 30%  { bottom: ${GROUND_H + 12}px; }
+  55%, 80% { bottom: ${GROUND_H + 104}px; }
+  100%     { bottom: ${GROUND_H + 12}px; }
+`;
+
+const PiranhaImg = styled.img`
+  position: absolute;
+  width: 52px;
+  transform: translateX(-50%);
+  image-rendering: pixelated;
+  z-index: 3; /* behind the pipe so it pops out of the rim */
+  pointer-events: none;
+  animation: ${piranhaPeek} 7s ease-in-out infinite;
 
   @media (max-width: 768px) {
     display: none;
@@ -143,9 +199,9 @@ const PipeLabel = styled.div`
   margin-bottom: 0.45rem;
   padding: 0.35rem 0.5rem;
   background: var(--gold);
-  color: #2f2f2f;
-  border: 3px solid #2f2f2f;
-  box-shadow: 2px 2px 0 rgba(47, 47, 47, 0.55);
+  color: #000;
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
   font-size: 0.42rem;
   white-space: nowrap;
   transition: transform 0.15s ease;
@@ -164,21 +220,15 @@ const PipeImg = styled.img`
   object-fit: fill;
 `;
 
-const QuestionBlock = styled.div`
+const Block = styled.div`
   position: absolute;
   bottom: ${GROUND_H + BLOCK_BOTTOM}px;
   width: ${BLOCK_SIZE}px;
   height: ${BLOCK_SIZE}px;
   transform: translateX(-50%);
   z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${({ $used }) => ($used ? '#9a6a2c' : 'var(--gold)')};
-  border: 4px solid #2f2f2f;
-  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.25), inset 4px 4px 0 rgba(255, 255, 255, 0.35);
-  color: ${({ $used }) => ($used ? 'rgba(47,47,47,0.45)' : '#2f2f2f')};
-  font-size: 1.1rem;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
   pointer-events: none;
 
   &.bounce {
@@ -188,12 +238,11 @@ const QuestionBlock = styled.div`
 
 const PopCoin = styled.div`
   position: absolute;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 34px;
   transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #ffe87a, #e8a000);
-  border: 3px solid #b8860b;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
   z-index: 3;
   pointer-events: none;
   animation: ${coinRise} 0.6s ease-out forwards;
@@ -215,8 +264,8 @@ const Hint = styled.div`
   z-index: 10;
   padding: 0.45rem 0.7rem;
   background: rgba(255, 255, 255, 0.92);
-  border: 3px solid #2f2f2f;
-  color: #2f2f2f;
+  border: 3px solid #000;
+  color: #000;
   font-size: 0.4rem;
   white-space: nowrap;
   animation: ${bob} 2s ease-in-out infinite;
@@ -231,9 +280,9 @@ const GroundStrip = styled.div`
   position: absolute;
   left: 0; right: 0; bottom: 0;
   height: ${GROUND_H}px;
-  background-image: url(${ground});
-  background-repeat: repeat-x;
-  background-size: contain;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
   z-index: 6;
 `;
 
@@ -262,9 +311,9 @@ const TouchGroup = styled.div`
 const TouchButton = styled.button`
   width: 58px;
   height: 58px;
-  border: 4px solid #2f2f2f;
+  border: 4px solid #000;
   background: rgba(255, 255, 255, 0.85);
-  color: #2f2f2f;
+  color: #000;
   font-family: var(--font-pixel);
   font-size: 1rem;
   touch-action: none;
@@ -288,6 +337,7 @@ const INIT_STATE = {
 let coinId = 0;
 
 const HeroSection = () => {
+  const T = tiles();
   const containerRef = useRef(null);
   const pipeImgRefs  = useRef([]);
   const blockRefs    = useRef([]);
@@ -355,6 +405,12 @@ const HeroSection = () => {
   };
 
   const hitBlock = (index) => {
+    setBlockBounces((b) => b.map((v, i) => (i === index ? v + 1 : v)));
+
+    if (BLOCKS[index].type === 'brick') {
+      sfx.bump();
+      return;
+    }
     const hits = blockHitsRef.current[index];
     if (hits >= BLOCK_MAX_HITS) {
       sfx.bump();
@@ -364,7 +420,6 @@ const HeroSection = () => {
     sfx.coin();
     window.dispatchEvent(new Event('mario:coin'));
     spawnCoin(index);
-    setBlockBounces((b) => b.map((v, i) => (i === index ? v + 1 : v)));
     if (hits + 1 >= BLOCK_MAX_HITS) {
       setUsedBlocks((u) => u.map((v, i) => (i === index ? true : v)));
     }
@@ -434,7 +489,7 @@ const HeroSection = () => {
 
       const cRect = containerRef.current?.getBoundingClientRect();
 
-      // ?-block headbutt — only while rising, head crossing block underside
+      // block headbutt — only while rising, head crossing block underside
       if (vy > 0 && cRect) {
         const prevHead = prevY + MARIO_H;
         const newHead = y + MARIO_H;
@@ -510,6 +565,11 @@ const HeroSection = () => {
     scroller.scrollTo(pipe.target, { smooth: true, duration: 600, offset: -56 });
   };
 
+  const blockTile = (block, used) => {
+    if (block.type === 'brick') return T.brickBlock;
+    return used ? T.usedBlock : T.qBlock;
+  };
+
   const { x, y, facingRight, moving, entering, targetPipe: rtPipe } = render;
 
   // While entering: go behind the pipe body once below the pipe rim
@@ -523,25 +583,37 @@ const HeroSection = () => {
       <CloudImg src={cloud} style={{ top: '40px', width: '420px', animationDuration: '90s' }} />
       <CloudImg src={cloud} style={{ top: '130px', width: '320px', animationDuration: '65s', animationDelay: '-30s' }} />
 
+      {/* hills + bushes on the horizon */}
+      <Scenery src={T.hill} style={{ left: '-2%', width: '300px' }} alt="" />
+      <Scenery src={T.bush} style={{ left: '24%', width: '150px' }} alt="" />
+      <Scenery src={T.bush} style={{ right: '8%', width: '130px' }} alt="" />
+
+      {/* residents */}
+      <GoombaImg src={T.goomba} alt="" />
+      <PiranhaImg src={piranhaPlant} style={{ left: '62%' }} alt="" />
+
       <TitleArea>
         <TypingTitle>HI! I&apos;M JASMEHAR</TypingTitle>
-        <Subtitle>software engineering @ uwaterloo · ai + full stack</Subtitle>
+        <Subtitle>SOFTWARE ENGINEERING @ UWATERLOO · AI + FULL STACK</Subtitle>
       </TitleArea>
 
       {BLOCKS.map((block, i) => (
-        <QuestionBlock
+        <Block
           key={`b${i}-${blockBounces[i]}`}
           ref={el => { blockRefs.current[i] = el; }}
-          style={{ left: `${block.xPercent}%` }}
+          style={{
+            left: `calc(50% + ${block.offset}px)`,
+            backgroundImage: `url(${blockTile(block, usedBlocks[i])})`,
+          }}
           className={blockBounces[i] > 0 ? 'bounce' : ''}
-          $used={usedBlocks[i]}
-        >
-          {usedBlocks[i] ? '' : '?'}
-        </QuestionBlock>
+        />
       ))}
 
       {popCoins.map((coin) => (
-        <PopCoin key={coin.id} style={{ left: coin.left, bottom: coin.bottom }} />
+        <PopCoin
+          key={coin.id}
+          style={{ left: coin.left, bottom: coin.bottom, backgroundImage: `url(${T.coin})` }}
+        />
       ))}
 
       {PIPES.map((pipe, i) => (
@@ -585,7 +657,7 @@ const HeroSection = () => {
         </TouchGroup>
       </TouchControls>
 
-      <GroundStrip />
+      <GroundStrip style={{ backgroundImage: `url(${T.ground})` }} />
     </HeroContainer>
   );
 };

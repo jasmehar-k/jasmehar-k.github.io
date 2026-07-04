@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-scroll';
 import { FaGithub, FaLinkedin, FaFileAlt, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 import { toggleMute, useMuted } from '../hooks/useSound';
+import { tiles } from '../utils/pixelArt';
 
 const pop = keyframes`
   0%   { transform: scale(1); }
@@ -21,13 +22,16 @@ const Bar = styled.nav`
   justify-content: space-between;
   gap: 1rem;
   min-height: var(--hud-h);
-  padding: 0.5rem 1.25rem;
-  background: rgba(15, 15, 27, 0.96);
-  border-bottom: 4px solid #000;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+  padding: 0.7rem 1.4rem 0.3rem;
+  background: transparent;
   font-family: var(--font-pixel);
-  color: var(--paper);
+  color: #fcfcfc;
   flex-wrap: wrap;
+  pointer-events: none;
+
+  a, button {
+    pointer-events: auto;
+  }
 
   @media (max-width: 768px) {
     justify-content: center;
@@ -48,7 +52,7 @@ const StatLabel = styled.span`
 `;
 
 const StatValue = styled.span`
-  color: var(--gold);
+  color: #fcfcfc;
 `;
 
 const StatGroup = styled.div`
@@ -68,13 +72,10 @@ const HideOnMobile = styled.div`
   }
 `;
 
-const CoinSprite = styled.span`
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #ffe87a, #e8a000);
-  border: 2px solid #b8860b;
+const CoinSprite = styled.img`
+  width: 11px;
+  height: auto;
+  image-rendering: pixelated;
   vertical-align: middle;
   margin-right: 0.35rem;
 `;
@@ -208,7 +209,7 @@ export default function StatusBar() {
         </HideOnMobile>
         <Stat>
           <StatLabel>
-            <CoinSprite />×
+            <CoinSprite src={tiles().coin} alt="" />×
             <CoinCount key={animKey}>{String(coins).padStart(2, '0')}</CoinCount>
           </StatLabel>
         </Stat>

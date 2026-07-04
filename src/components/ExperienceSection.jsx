@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import marioSlide from '../assets/mario_slide.png';
 import WorldPlaque from './WorldPlaque';
+import { tiles } from '../utils/pixelArt';
 
 const flicker = keyframes`
   0%, 100% { box-shadow: 0 0 14px 4px rgba(255, 123, 61, 0.55); }
@@ -11,24 +12,58 @@ const flicker = keyframes`
 
 const SectionWrapper = styled.section`
   position: relative;
-  padding: 5rem 2rem 6rem;
-  border-bottom: 4px solid #000;
-  /* castle brickwork */
-  background:
-    repeating-linear-gradient(90deg, transparent 0 74px, rgba(0, 0, 0, 0.5) 74px 78px),
-    repeating-linear-gradient(0deg, transparent 0 33px, rgba(0, 0, 0, 0.5) 33px 37px),
-    linear-gradient(180deg, #26262e 0%, var(--castle-bg) 100%);
+  padding: 0 2rem 12rem;
+  background: #000;
+  overflow: hidden;
+`;
+
+/* castle stone ceiling, walls and lava floor — world 1-4 */
+const StoneCeiling = styled.div`
+  height: 96px;
+  margin: 0 -2rem 4rem;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
+`;
+
+const StoneWall = styled.div`
+  position: absolute;
+  top: 96px;
+  bottom: 96px;
+  width: 48px;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
+  z-index: 1;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const LavaStrip = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  background-color: #d82800;
+  background-repeat: repeat-x;
+  background-position: top;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
+  z-index: 2;
 `;
 
 const Timeline = styled.div`
   position: absolute;
-  top: 14rem;
-  bottom: 3rem;
+  top: 16rem;
+  bottom: 120px;
   left: 50%;
   transform: translateX(-50%);
   width: 10px;
   background: #3c3c46;
-  border: 3px solid #000;
+  border: 3px solid #1a1a1a;
 
   @media (max-width: 600px) {
     display: none;
@@ -71,9 +106,10 @@ const Torch = styled.div`
 `;
 
 const Card = styled.div`
-  background: #2b2b35;
-  border: 4px solid #000;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.55), inset 3px 3px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 2;
+  background: #000;
+  border: 4px solid #fcfcfc;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -102,16 +138,16 @@ const JobTitle = styled.h3`
 `;
 
 const Company = styled.div`
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 1rem;
-  color: #fffef7;
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  line-height: 1.7;
+  color: #fcfcfc;
 `;
 
 const Duration = styled.div`
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--castle-stone);
+  font-family: var(--font-pixel);
+  font-size: 0.48rem;
+  color: #bcbcbc;
 `;
 
 const Divider = styled.hr`
@@ -156,13 +192,13 @@ const ArrowButton = styled.button`
 const SlideText = styled.p`
   margin: 0;
   flex: 1;
-  min-height: 5rem;
+  min-height: 6.5rem;
   display: flex;
   align-items: center;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: rgba(255, 254, 247, 0.88);
+  font-family: var(--font-pixel);
+  font-size: 0.48rem;
+  line-height: 2;
+  color: #fcfcfc;
 `;
 
 const SlideFooter = styled.div`
@@ -320,8 +356,13 @@ const ExperienceTimeline = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const T = tiles();
+
   return (
     <SectionWrapper id="experience" ref={sectionRef}>
+      <StoneCeiling style={{ backgroundImage: `url(${T.stone})` }} />
+      <StoneWall style={{ left: 0, backgroundImage: `url(${T.stone})` }} />
+      <StoneWall style={{ right: 0, backgroundImage: `url(${T.stone})` }} />
       <WorldPlaque world="1-4" name="EXPERIENCE" light />
       <Timeline />
       <MarioSlideImg src={marioSlide} $animate={animateMario} $top={marioTop} alt="" />
@@ -331,6 +372,7 @@ const ExperienceTimeline = () => {
           <ExperienceCard exp={exp} />
         </ExperienceItem>
       ))}
+      <LavaStrip style={{ backgroundImage: `url(${T.lava})` }} />
     </SectionWrapper>
   );
 };

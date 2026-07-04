@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ArcadeIntro from './ArcadeIntro';
+
+// three.js only loads for first-time visitors who actually see the intro
+const ArcadeIntro = lazy(() => import('./ArcadeIntro'));
 
 const AppShell = styled.div`
   position: relative;
@@ -45,18 +47,20 @@ function IntroGate({ children }) {
   return (
     <AppShell>
       {phase !== 'portfolio' && (
-        <ArcadeIntro
-          phase={phase}
-          onBeginTransition={() => setPhase('transitioning')}
-          onFinishTransition={() => {
-            markSeen();
-            setPhase('portfolio');
-          }}
-          onSkip={() => {
-            markSeen();
-            setPhase('portfolio');
-          }}
-        />
+        <Suspense fallback={null}>
+          <ArcadeIntro
+            phase={phase}
+            onBeginTransition={() => setPhase('transitioning')}
+            onFinishTransition={() => {
+              markSeen();
+              setPhase('portfolio');
+            }}
+            onSkip={() => {
+              markSeen();
+              setPhase('portfolio');
+            }}
+          />
+        </Suspense>
       )}
       <PortfolioLayer $phase={phase}>{children}</PortfolioLayer>
     </AppShell>

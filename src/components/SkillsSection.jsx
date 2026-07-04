@@ -5,6 +5,7 @@ import { FaPython, FaProjectDiagram, FaJs, FaReact, FaGitAlt, FaDocker, FaDataba
 import { SiTypescript, SiCplusplus, SiHtml5, SiCss3, SiPostman, SiPytorch, SiFastapi, SiNodedotjs, SiTailwindcss, SiLangchain, SiGnubash, SiC, SiAmazonwebservices, SiApachekafka, SiKubernetes, SiHelm, SiOpensearch, SiRaspberrypi, SiScikitlearn, SiAngular, SiGo } from 'react-icons/si';
 import WorldPlaque from './WorldPlaque';
 import { sfx } from '../hooks/useSound';
+import { tiles } from '../utils/pixelArt';
 
 const bump = keyframes`
   0%   { transform: translateY(0); }
@@ -14,19 +15,43 @@ const bump = keyframes`
 
 const SkillsWrapper = styled.section`
   position: relative;
-  background: var(--ug-bg);
-  padding: 0 2rem 5rem;
+  background: #000;
+  padding: 0 2rem 10rem;
   overflow: hidden;
 `;
 
-/* underground brick ceiling */
+/* underground teal brick ceiling, side walls and floor — world 1-2 */
 const BrickCeiling = styled.div`
-  height: 46px;
+  height: 96px;
   margin: 0 -2rem 4rem;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 56px, rgba(0, 0, 0, 0.55) 56px 60px),
-    repeating-linear-gradient(0deg, transparent 0 19px, rgba(0, 0, 0, 0.55) 19px 23px),
-    var(--ug-brick);
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
+`;
+
+const SideWall = styled.div`
+  position: absolute;
+  top: 96px;
+  bottom: 0;
+  width: 48px;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const FloorStrip = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  background-repeat: repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
 `;
 
 const Inner = styled.div`
@@ -44,7 +69,7 @@ const CategoryTitle = styled.h3`
   gap: 0.8rem;
   font-family: var(--font-pixel);
   font-size: 0.85rem;
-  color: var(--ug-text);
+  color: #fcfcfc;
   margin: 0 0 1.6rem;
 `;
 
@@ -64,18 +89,19 @@ const SkillsGrid = styled.div`
 `;
 
 const SkillBlock = styled.button`
-  height: 116px;
+  height: 128px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   padding: 0.8rem 0.4rem;
-  background: var(--gold);
-  border: 4px solid #2f2f2f;
-  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.25), inset 4px 4px 0 rgba(255, 255, 255, 0.35), 0 6px 0 rgba(0, 0, 0, 0.4);
+  background-color: transparent;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  border: none;
   font-family: var(--font-pixel);
-  color: #2f2f2f;
+  color: #4a1d00;
   cursor: pointer;
 
   &:hover {
@@ -110,9 +136,8 @@ const Grid = styled.div`
 `;
 
 const CertCard = styled.div`
-  background: #191930;
-  border: 4px solid var(--ug-brick);
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  background: #000;
+  border: 4px solid #fcfcfc;
   padding: 1.5rem;
   transition: transform 0.2s;
 
@@ -129,25 +154,24 @@ const CertCard = styled.div`
 
 const CertTitle = styled.h3`
   font-family: var(--font-pixel);
-  font-size: 0.7rem;
-  line-height: 1.6;
-  color: var(--ug-text);
+  font-size: 0.65rem;
+  line-height: 1.7;
+  color: #fcfcfc;
   margin: 0 0 0.7rem;
 `;
 
 const CertOrg = styled.p`
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
   color: var(--gold);
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.8rem;
 `;
 
 const CertBlurb = styled.p`
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: rgba(216, 226, 255, 0.82);
+  font-family: var(--font-pixel);
+  font-size: 0.45rem;
+  line-height: 2;
+  color: #fcfcfc;
   margin: 0;
 `;
 
@@ -250,9 +274,13 @@ const popCoin = () => {
 };
 
 const SkillsSection = () => {
+  const T = tiles();
+
   return (
     <SkillsWrapper id="skills">
-      <BrickCeiling />
+      <BrickCeiling style={{ backgroundImage: `url(${T.tealBrick})` }} />
+      <SideWall style={{ left: 0, backgroundImage: `url(${T.tealBrick})` }} />
+      <SideWall style={{ right: 0, backgroundImage: `url(${T.tealBrick})` }} />
       <WorldPlaque world="1-2" name="SKILLS" light />
       <Inner>
         {CATEGORIES.map((category) => (
@@ -264,7 +292,13 @@ const SkillsSection = () => {
             </CategoryTitle>
             <SkillsGrid>
               {category.skills.map((skill) => (
-                <SkillBlock key={skill.name} type="button" onClick={popCoin} aria-label={skill.name}>
+                <SkillBlock
+                  key={skill.name}
+                  type="button"
+                  onClick={popCoin}
+                  aria-label={skill.name}
+                  style={{ backgroundImage: `url(${T.qBlockPlain})` }}
+                >
                   <IconWrapper>{skill.icon}</IconWrapper>
                   <SkillName>{skill.name}</SkillName>
                 </SkillBlock>
@@ -290,6 +324,7 @@ const SkillsSection = () => {
           </Grid>
         </Category>
       </Inner>
+      <FloorStrip style={{ backgroundImage: `url(${T.tealBrick})` }} />
     </SkillsWrapper>
   );
 };
