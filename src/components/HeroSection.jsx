@@ -6,7 +6,6 @@ import cloud from '../assets/cloud.png';
 import marioRun from '../assets/mario_run.gif';
 import marioIdle from '../assets/mario_slide.png';
 import shortPipe from '../assets/pipe.png';
-import piranhaPlant from '../assets/piranha_plant.png';
 import { sfx } from '../hooks/useSound';
 import { tiles } from '../utils/pixelArt';
 
@@ -18,9 +17,6 @@ const MARIO_H        = 74;    // sprite height px
 const GROUND_H       = 96;    // two rows of 48px ground tiles
 const PIPE_W         = 90;    // pipe sprite width px
 const PIPE_ENTER_SPD = 130;   // px/s Mario sinks into pipe
-const BLOCK_SIZE     = 48;    // block px
-const BLOCK_BOTTOM   = 150;   // block underside height above ground px
-const BLOCK_MAX_HITS = 5;     // coins per ? block before it empties
 
 // xPercent: pipe center as % of container width
 const PIPES = [
@@ -28,15 +24,6 @@ const PIPES = [
   { label: 'SKILLS',     target: 'skills',     xPercent: 35, pipeH: 90 },
   { label: 'EXPERIENCE', target: 'experience', xPercent: 62, pipeH: 90 },
   { label: 'PROJECTS',   target: 'projects',   xPercent: 82, pipeH: 90 },
-];
-
-// classic brick / ? / brick / ? / brick row, centered
-const BLOCKS = [
-  { offset: -104, type: 'brick' },
-  { offset: -52,  type: 'q' },
-  { offset: 0,    type: 'brick' },
-  { offset: 52,   type: 'q' },
-  { offset: 104,  type: 'brick' },
 ];
 
 const bob = keyframes`
@@ -60,17 +47,6 @@ const driftLeftToRight = keyframes`
   100% { left: 110%; }
 `;
 
-const blockBounce = keyframes`
-  0%   { transform: translateY(0); }
-  40%  { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
-`;
-
-const coinRise = keyframes`
-  0%   { transform: translateY(0) rotateY(0deg); opacity: 1; }
-  100% { transform: translateY(-90px) rotateY(540deg); opacity: 0; }
-`;
-
 const HeroContainer = styled.section`
   position: relative;
   height: 100vh;
@@ -81,7 +57,7 @@ const HeroContainer = styled.section`
 
 const TitleArea = styled.div`
   position: absolute;
-  top: clamp(7rem, 20vh, 12rem);
+  top: clamp(9rem, 26vh, 15rem);
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -143,47 +119,6 @@ const Scenery = styled.img`
   }
 `;
 
-const goombaPatrol = keyframes`
-  0%    { left: 41%; transform: scaleX(1); }
-  49.9% { left: 53%; transform: scaleX(1); }
-  50%   { left: 53%; transform: scaleX(-1); }
-  100%  { left: 41%; transform: scaleX(-1); }
-`;
-
-const GoombaImg = styled.img`
-  position: absolute;
-  bottom: ${GROUND_H}px;
-  width: 42px;
-  image-rendering: pixelated;
-  z-index: 2;
-  pointer-events: none;
-  animation: ${goombaPatrol} 16s linear infinite;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const piranhaPeek = keyframes`
-  0%, 30%  { bottom: ${GROUND_H + 12}px; }
-  55%, 80% { bottom: ${GROUND_H + 104}px; }
-  100%     { bottom: ${GROUND_H + 12}px; }
-`;
-
-const PiranhaImg = styled.img`
-  position: absolute;
-  width: 52px;
-  transform: translateX(-50%);
-  image-rendering: pixelated;
-  z-index: 3; /* behind the pipe so it pops out of the rim */
-  pointer-events: none;
-  animation: ${piranhaPeek} 7s ease-in-out infinite;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
 const PipeWrapper = styled.div`
   position: absolute;
   bottom: ${GROUND_H}px;
@@ -220,34 +155,6 @@ const PipeImg = styled.img`
   object-fit: fill;
 `;
 
-const Block = styled.div`
-  position: absolute;
-  bottom: ${GROUND_H + BLOCK_BOTTOM}px;
-  width: ${BLOCK_SIZE}px;
-  height: ${BLOCK_SIZE}px;
-  transform: translateX(-50%);
-  z-index: 4;
-  background-size: 100% 100%;
-  image-rendering: pixelated;
-  pointer-events: none;
-
-  &.bounce {
-    animation: ${blockBounce} 0.24s ease;
-  }
-`;
-
-const PopCoin = styled.div`
-  position: absolute;
-  width: 24px;
-  height: 34px;
-  transform: translateX(-50%);
-  background-size: 100% 100%;
-  image-rendering: pixelated;
-  z-index: 3;
-  pointer-events: none;
-  animation: ${coinRise} 0.6s ease-out forwards;
-`;
-
 const MarioSprite = styled.img`
   position: absolute;
   height: ${MARIO_H}px;
@@ -260,7 +167,8 @@ const MarioSprite = styled.img`
 const Hint = styled.div`
   position: absolute;
   left: 50%;
-  bottom: ${GROUND_H + 108}px;
+  top: calc(var(--hud-h) + 22px);
+  transform: translateX(-50%);
   z-index: 10;
   padding: 0.45rem 0.7rem;
   background: rgba(255, 255, 255, 0.92);
@@ -334,20 +242,16 @@ const INIT_STATE = {
   enterX: 0,
 };
 
-let coinId = 0;
-
 const HeroSection = () => {
   const T = tiles();
   const containerRef = useRef(null);
   const pipeImgRefs  = useRef([]);
-  const blockRefs    = useRef([]);
   const keysRef      = useRef({});
   const stateRef     = useRef({ ...INIT_STATE });
   const frameRef     = useRef(null);
   const lastTimeRef  = useRef(null);
   const inViewRef    = useRef(true);
   const navigatedRef = useRef(false);
-  const blockHitsRef = useRef(BLOCKS.map(() => 0));
 
   const [render, setRender] = useState({
     x: 80, y: 0,
@@ -356,9 +260,6 @@ const HeroSection = () => {
     entering: false,
     targetPipe: -1,
   });
-  const [blockBounces, setBlockBounces] = useState(BLOCKS.map(() => 0));
-  const [usedBlocks, setUsedBlocks] = useState(BLOCKS.map(() => false));
-  const [popCoins, setPopCoins] = useState([]);
 
   // Disable arrow-key page scroll when hero is visible
   useEffect(() => {
@@ -388,43 +289,6 @@ const HeroSection = () => {
     };
   }, []);
 
-  const spawnCoin = (index) => {
-    const el = blockRefs.current[index];
-    const container = containerRef.current;
-    if (!el || !container) return;
-    const rect = el.getBoundingClientRect();
-    const cRect = container.getBoundingClientRect();
-    const id = ++coinId;
-    setPopCoins((coins) => [
-      ...coins,
-      { id, left: rect.left - cRect.left + rect.width / 2, bottom: GROUND_H + BLOCK_BOTTOM + BLOCK_SIZE },
-    ]);
-    setTimeout(() => {
-      setPopCoins((coins) => coins.filter((c) => c.id !== id));
-    }, 650);
-  };
-
-  const hitBlock = (index) => {
-    setBlockBounces((b) => b.map((v, i) => (i === index ? v + 1 : v)));
-
-    if (BLOCKS[index].type === 'brick') {
-      sfx.bump();
-      return;
-    }
-    const hits = blockHitsRef.current[index];
-    if (hits >= BLOCK_MAX_HITS) {
-      sfx.bump();
-      return;
-    }
-    blockHitsRef.current[index] = hits + 1;
-    sfx.coin();
-    window.dispatchEvent(new Event('mario:coin'));
-    spawnCoin(index);
-    if (hits + 1 >= BLOCK_MAX_HITS) {
-      setUsedBlocks((u) => u.map((v, i) => (i === index ? true : v)));
-    }
-  };
-
   // Game loop
   useEffect(() => {
     const tick = (time) => {
@@ -432,6 +296,12 @@ const HeroSection = () => {
         ? Math.min((time - lastTimeRef.current) / 1000, 0.05)
         : 0;
       lastTimeRef.current = time;
+
+      // hero off screen: idle cheaply instead of re-rendering at 60fps
+      if (!inViewRef.current && stateRef.current.mode === 'walking') {
+        frameRef.current = requestAnimationFrame(tick);
+        return;
+      }
 
       const keys = keysRef.current;
       let { x, y, vy, facingRight, jumpWasDown, mode, targetPipe, enterX } = stateRef.current;
@@ -489,27 +359,6 @@ const HeroSection = () => {
 
       const cRect = containerRef.current?.getBoundingClientRect();
 
-      // block headbutt — only while rising, head crossing block underside
-      if (vy > 0 && cRect) {
-        const prevHead = prevY + MARIO_H;
-        const newHead = y + MARIO_H;
-        for (let i = 0; i < BLOCKS.length; i++) {
-          const el = blockRefs.current[i];
-          if (!el) continue;
-          const br = el.getBoundingClientRect();
-          const bLeft = br.left - cRect.left;
-          const bRight = br.right - cRect.left;
-          const mL = x + MARIO_W * 0.25;
-          const mR = x + MARIO_W * 0.75;
-          if (mR > bLeft && mL < bRight && prevHead <= BLOCK_BOTTOM && newHead > BLOCK_BOTTOM) {
-            y = BLOCK_BOTTOM - MARIO_H;
-            vy = 0;
-            hitBlock(i);
-            break;
-          }
-        }
-      }
-
       // Pipe-top collision — only while falling, crossing the pipe rim from above
       if (vy <= 0 && cRect) {
         for (let i = 0; i < PIPES.length; i++) {
@@ -547,7 +396,7 @@ const HeroSection = () => {
 
     frameRef.current = requestAnimationFrame(tick);
     return () => { if (frameRef.current) cancelAnimationFrame(frameRef.current); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   const pressKey = (key, down) => {
@@ -565,11 +414,6 @@ const HeroSection = () => {
     scroller.scrollTo(pipe.target, { smooth: true, duration: 600, offset: -56 });
   };
 
-  const blockTile = (block, used) => {
-    if (block.type === 'brick') return T.brickBlock;
-    return used ? T.usedBlock : T.qBlock;
-  };
-
   const { x, y, facingRight, moving, entering, targetPipe: rtPipe } = render;
 
   // While entering: go behind the pipe body once below the pipe rim
@@ -583,38 +427,15 @@ const HeroSection = () => {
       <CloudImg src={cloud} style={{ top: '40px', width: '420px', animationDuration: '90s' }} />
       <CloudImg src={cloud} style={{ top: '130px', width: '320px', animationDuration: '65s', animationDelay: '-30s' }} />
 
-      {/* hills + bushes on the horizon */}
-      <Scenery src={T.hill} style={{ left: '-2%', width: '300px' }} alt="" />
-      <Scenery src={T.bush} style={{ left: '24%', width: '150px' }} alt="" />
-      <Scenery src={T.bush} style={{ right: '8%', width: '130px' }} alt="" />
-
-      {/* residents */}
-      <GoombaImg src={T.goomba} alt="" />
-      <PiranhaImg src={piranhaPlant} style={{ left: '62%' }} alt="" />
+      {/* hills on the horizon */}
+      <Scenery src={T.hill} style={{ left: '-3%', width: '320px' }} alt="" />
+      <Scenery src={T.bush} style={{ left: '26%', width: '170px' }} alt="" />
+      <Scenery src={T.bush} style={{ right: '6%', width: '150px' }} alt="" />
 
       <TitleArea>
         <TypingTitle>HI! I&apos;M JASMEHAR</TypingTitle>
         <Subtitle>SOFTWARE ENGINEERING @ UWATERLOO · AI + FULL STACK</Subtitle>
       </TitleArea>
-
-      {BLOCKS.map((block, i) => (
-        <Block
-          key={`b${i}-${blockBounces[i]}`}
-          ref={el => { blockRefs.current[i] = el; }}
-          style={{
-            left: `calc(50% + ${block.offset}px)`,
-            backgroundImage: `url(${blockTile(block, usedBlocks[i])})`,
-          }}
-          className={blockBounces[i] > 0 ? 'bounce' : ''}
-        />
-      ))}
-
-      {popCoins.map((coin) => (
-        <PopCoin
-          key={coin.id}
-          style={{ left: coin.left, bottom: coin.bottom, backgroundImage: `url(${T.coin})` }}
-        />
-      ))}
 
       {PIPES.map((pipe, i) => (
         <PipeWrapper
@@ -645,7 +466,7 @@ const HeroSection = () => {
         }}
       />
 
-      <Hint>← → move · ↑ jump · bump ? blocks · land on a pipe to enter</Hint>
+      <Hint>← → move · ↑ jump · land on a pipe to enter</Hint>
 
       <TouchControls>
         <TouchGroup>

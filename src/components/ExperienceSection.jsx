@@ -223,7 +223,8 @@ const MarioSlideImg = styled.img`
   left: calc(50% - 30px);
   width: 50px;
   image-rendering: pixelated;
-  transition: top 0.1s ease-out, opacity 0.3s;
+  transition: top 0.12s linear, opacity 0.3s;
+  will-change: top;
   opacity: ${({ $animate }) => ($animate ? 1 : 0)};
   top: ${({ $top }) => `${$top}px`};
   z-index: 10;
@@ -351,7 +352,7 @@ const ExperienceTimeline = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);

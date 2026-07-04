@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Link } from 'react-scroll';
 import { FaGithub, FaLinkedin, FaFileAlt, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 import { toggleMute, useMuted } from '../hooks/useSound';
-import { tiles } from '../utils/pixelArt';
-
-const pop = keyframes`
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.45); }
-  100% { transform: scale(1); }
-`;
 
 const Bar = styled.nav`
   position: fixed;
@@ -70,19 +63,6 @@ const HideOnMobile = styled.div`
   @media (max-width: 768px) {
     display: none;
   }
-`;
-
-const CoinSprite = styled.img`
-  width: 11px;
-  height: auto;
-  image-rendering: pixelated;
-  vertical-align: middle;
-  margin-right: 0.35rem;
-`;
-
-const CoinCount = styled.span`
-  display: inline-block;
-  animation: ${pop} 0.22s ease;
 `;
 
 const NavGroup = styled.div`
@@ -154,20 +134,9 @@ const NAV_ITEMS = [
 ];
 
 export default function StatusBar() {
-  const [coins, setCoins] = useState(0);
-  const [animKey, setAnimKey] = useState(0);
   const [world, setWorld] = useState('1-1');
   const [time, setTime] = useState(999);
   const muted = useMuted();
-
-  useEffect(() => {
-    const onCoin = () => {
-      setCoins((c) => c + 1);
-      setAnimKey((k) => k + 1);
-    };
-    window.addEventListener('mario:coin', onCoin);
-    return () => window.removeEventListener('mario:coin', onCoin);
-  }, []);
 
   // classic SMB timer, counts down and just stops at zero
   useEffect(() => {
@@ -196,23 +165,15 @@ export default function StatusBar() {
     return () => observer.disconnect();
   }, []);
 
-  const score = String(coins * 200).padStart(6, '0');
-
   return (
     <Bar>
       <StatGroup>
         <HideOnMobile>
           <Stat>
             <StatLabel>JASMEHAR</StatLabel>
-            <StatValue>{score}</StatValue>
+            <StatValue>SWE @ UWATERLOO</StatValue>
           </Stat>
         </HideOnMobile>
-        <Stat>
-          <StatLabel>
-            <CoinSprite src={tiles().coin} alt="" />×
-            <CoinCount key={animKey}>{String(coins).padStart(2, '0')}</CoinCount>
-          </StatLabel>
-        </Stat>
         <Stat>
           <StatLabel>WORLD</StatLabel>
           <StatValue>{world}</StatValue>

@@ -131,82 +131,41 @@ const SEABED16 = BLOB8.map((row) => row + row).concat(
   BLOB8.map((row) => row.slice(4) + row + row.slice(0, 4)),
 );
 
-// classic three-hump bush (also used for hills at a bigger scale)
-const BUSH32 = [
-  '..............BBBB..............',
-  '............BBLLLLBB............',
-  '...........BLLLLLLLLB...........',
+// smb overworld hill: smooth dome, black outline, diagonal spot pair
+const HILL32 = [
+  '.............BBBBBB.............',
+  '...........BBGGGGGGBB...........',
   '..........BGGGGGGGGGGB..........',
-  '...BBBB...BGGGGGGGGGGB...BBBB...',
-  '..BLLLLB..BGGGGGGGGGGB..BLLLLB..',
-  '.BGGGGGGBBGGGGGGGGGGGGBBGGGGGGB.',
+  '.........BGGGGGGGGGGGGB.........',
+  '........BGGGGGGGGGGGGGGB........',
+  '.......BGGGGGGGGGGBBGGGGB.......',
+  '......BGGGGGGGGGGGBBGGGGGB......',
+  '.....BGGGGGGGGGGBBGGGGGGGGB.....',
+  '....BGGGGGGGGGGGBBGGGGGGGGGB....',
+  '...BGGGGGGGGGGGGGGGGGGGGGGGGB...',
+  '..BGGGGGGGGGGGGGGGGGGGGGGGGGGB..',
   '.BGGGGGGGGGGGGGGGGGGGGGGGGGGGGB.',
   'BGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGB',
-  'BGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGB',
-  'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+  'GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG',
 ];
 
-// classic goomba
-const GOOMBA16 = [
-  '.....BBBBBB.....',
-  '....BMMMMMMB....',
-  '...BMMMMMMMMB...',
-  '..BMMMMMMMMMMB..',
-  '..BMWWBMMBWWMB..',
-  '.BMMWWBMMBWWMMB.',
-  '.BMMWBBMMBBWMMB.',
-  'BMMMMMMMMMMMMMMB',
-  'BMMMMMMMMMMMMMMB',
-  '.BMMMMMMMMMMMMB.',
-  '..BCCCCCCCCCCB..',
-  '.BFFFCCCCCCFFFB.',
-  '.BFFFFB..BFFFFB.',
-];
-
-// single-mound bush / hill
-const MOUND24 = [
-  '.........LLLLLL.........',
-  '.......LLGGGGGGLL.......',
-  '.....LLGGGGGGGGGGLL.....',
-  '...LLGGGGGGGGGGGGGGLL...',
-  '..LGGGGGGGGGGGGGGGGGL...',
-  '.LGGGGGGDGGGGGGDGGGGGL..',
-  'LGGGGGGGGGGGGGGGGGGGGGL.',
-  'LGGGGGGGGGGGGGGGGGGGGGL.',
-  '.GGGGGGGGGGGGGGGGGGGGG..',
-];
-
-// flagpole pennant, apex pointing left, small green dot emblem
-const FLAG14 = [
-  '............WW',
-  '..........WWWW',
-  '........WWWWWW',
-  '......WWWWWWWW',
-  '....WWWWWWWWWW',
-  '..WWWWWWWGGWWW',
-  'WWWWWWWWWGGWWW',
-  '..WWWWWWWGGWWW',
-  '....WWWWWWWWWW',
-  '......WWWWWWWW',
-  '........WWWWWW',
-  '..........WWWW',
-  '............WW',
-];
-
-// spinning-coin face
-const COIN8 = [
-  '..BBBB..',
-  '.BGGGGB.',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  'BGGLLGGB',
-  '.BGGGGB.',
-  '..BBBB..',
+// flagpole pennant: full at the top, tapering down toward the pole,
+// green emblem near the top-left — like the game
+const FLAG16 = [
+  'WWWWWWWWWWWWWWWW',
+  '.WWWWWWWWWWWWWWW',
+  '..WWWGGGGWWWWWWW',
+  '...WGGGGGGWWWWWW',
+  '....GGGGGGWWWWWW',
+  '.....GGGGWWWWWWW',
+  '......WWWWWWWWWW',
+  '.......WWWWWWWWW',
+  '........WWWWWWWW',
+  '.........WWWWWWW',
+  '..........WWWWWW',
+  '...........WWWWW',
+  '............WWWW',
+  '.............WWW',
 ];
 
 // branchy pink coral
@@ -239,12 +198,9 @@ export function tiles() {
     lava: sprite(LAVA16, { W: NES.white, R: NES.lavaRed, D: NES.lavaDark }),
     wave: sprite(WAVE16, { W: NES.white }),
     seabed: sprite(SEABED16, { L: NES.greenLight, G: NES.greenMid, D: NES.greenDark }),
-    bush: sprite(BUSH32, { B: NES.black, L: '#b8f860', G: NES.greenLight }, 4),
-    hill: sprite(BUSH32, { B: NES.black, L: '#58c838', G: '#2c9410' }, 9),
-    mound: sprite(MOUND24, { L: NES.greenLight, G: NES.greenMid, D: NES.greenDark }, 4),
-    goomba: sprite(GOOMBA16, { B: NES.black, M: '#9c4a00', W: NES.white, C: '#fcd8a8', F: '#3c1800' }, 3),
-    flag: sprite(FLAG14, { W: NES.white, G: NES.greenMid }, 4),
-    coin: sprite(COIN8, { B: '#7a5a08', G: NES.gold, L: '#fff8b0' }, 3),
+    bush: sprite(HILL32, { B: NES.black, G: '#3ba60e' }, 4),
+    hill: sprite(HILL32, { B: NES.black, G: '#3ba60e' }, 9),
+    flag: sprite(FLAG16, { W: NES.white, G: '#3ba60e' }, 4),
     coral: sprite(CORAL12, { P: NES.coral }, 4),
   };
   return cache;

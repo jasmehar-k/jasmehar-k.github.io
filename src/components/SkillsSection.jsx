@@ -268,9 +268,8 @@ const CATEGORIES = [
   },
 ];
 
-const popCoin = () => {
-  sfx.coin();
-  window.dispatchEvent(new Event('mario:coin'));
+const bumpBlock = () => {
+  sfx.bump();
 };
 
 const SkillsSection = () => {
@@ -295,7 +294,7 @@ const SkillsSection = () => {
                 <SkillBlock
                   key={skill.name}
                   type="button"
-                  onClick={popCoin}
+                  onClick={bumpBlock}
                   aria-label={skill.name}
                   style={{ backgroundImage: `url(${T.qBlockPlain})` }}
                 >

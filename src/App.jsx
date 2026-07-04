@@ -1,7 +1,6 @@
 import GlobalStyle from './components/GlobalStyle';
 import IntroGate from './components/IntroGate';
 import StatusBar from './components/StatusBar';
-import PixelCursor from './components/PixelCursor';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
@@ -15,7 +14,6 @@ function App() {
       <GlobalStyle />
       <IntroGate>
         <StatusBar />
-        <PixelCursor />
         <HeroSection />
         <AboutSection id="about" />
         <SkillsSection id="skills" />

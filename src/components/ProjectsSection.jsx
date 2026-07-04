@@ -27,7 +27,7 @@ const rise = keyframes`
 
 const ProjectsContainer = styled.section`
   position: relative;
-  background: #2048e8;
+  background: #2038ec;
   padding: 0 2rem 13rem;
   overflow: hidden;
 `;
@@ -73,19 +73,6 @@ const Coral = styled.img`
   }
 `;
 
-const FloatingCoin = styled.img`
-  position: absolute;
-  width: 26px;
-  image-rendering: pixelated;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.95;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
 const Bubble = styled.div`
   position: absolute;
   bottom: -40px;
@@ -110,11 +97,13 @@ const ProjectGrid = styled.div`
   margin: 0 auto;
 `;
 
+/* styled like the smb1 title-screen logo panel: brick red, cream double border */
 const ProjectCard = styled.div`
-  background: #000;
-  border: 4px solid #fcfcfc;
+  background: #b53120;
+  border: 4px solid #000;
+  box-shadow: inset 0 0 0 5px #f8d878, inset 0 -14px 0 5px rgba(0, 0, 0, 0.25);
   width: 310px;
-  padding: 0 0 1.2rem;
+  padding: 1.3rem 1.2rem 1.6rem;
   position: relative;
   transition: transform 0.25s ease;
   display: flex;
@@ -133,33 +122,21 @@ const ProjectCard = styled.div`
 
 const LevelHeader = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.7rem 0.9rem;
-  background: var(--gold);
-  border-bottom: 4px solid #fcfcfc;
-`;
-
-const LevelChip = styled.span`
-  font-family: var(--font-pixel);
-  font-size: 0.42rem;
-  background: #000;
-  color: var(--gold);
-  padding: 0.3rem 0.4rem;
-  white-space: nowrap;
+  margin-bottom: 0.9rem;
 `;
 
 const ProjectName = styled.h3`
   margin: 0;
   font-family: var(--font-pixel);
   font-size: 0.62rem;
-  line-height: 1.5;
-  color: #000;
+  line-height: 1.6;
+  color: #f8d878;
   flex: 1;
 `;
 
 const CardBody = styled.div`
-  padding: 1rem 1rem 0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -173,18 +150,17 @@ const SkillTags = styled.div`
 `;
 
 const SkillTag = styled.span`
-  background: #000;
-  color: var(--gold);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fce7c8;
   padding: 0.28rem 0.45rem;
   font-family: var(--font-pixel);
   font-size: 0.4rem;
-  border: 2px solid var(--gold);
 `;
 
 const ImageWrapper = styled.div`
   overflow: hidden;
   margin-bottom: 1rem;
-  border: 3px solid #fcfcfc;
+  border: 3px solid #000;
 
   img {
     width: 100%;
@@ -204,16 +180,17 @@ const Description = styled.p`
 const LinkIcons = styled.div`
   display: flex;
   gap: 0.55rem;
+  padding-top: 0.15rem;
 `;
 
 const ProjectLinkIcon = styled.a`
-  color: #000;
+  color: #f8d878;
   font-size: 1rem;
   display: inline-flex;
   align-items: center;
 
   &:hover {
-    color: var(--mario-red);
+    color: #fcfcfc;
   }
 `;
 
@@ -388,15 +365,10 @@ const ProjectsSection = () => {
         />
       ))}
 
-      <FloatingCoin src={T.coin} style={{ left: '5%', top: '30%' }} alt="" />
-      <FloatingCoin src={T.coin} style={{ left: '7%', top: '44%' }} alt="" />
-      <FloatingCoin src={T.coin} style={{ right: '5%', top: '58%' }} alt="" />
-      <FloatingCoin src={T.coin} style={{ right: '7%', top: '72%' }} alt="" />
-
       <WorldPlaque world="2-2" name="PROJECTS" light />
 
       <ProjectGrid>
-        {PROJECTS.map((project, index) => (
+        {PROJECTS.map((project) => (
           <ProjectCard key={project.name}>
             {project.award && (
               <AwardBadge aria-label={`${project.name} award`}>
@@ -405,7 +377,6 @@ const ProjectsSection = () => {
               </AwardBadge>
             )}
             <LevelHeader>
-              <LevelChip>{`LV ${index + 1}`}</LevelChip>
               <ProjectName>{project.name}</ProjectName>
               <LinkIcons>
                 {project.github && (

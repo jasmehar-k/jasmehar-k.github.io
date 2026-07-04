@@ -15,15 +15,16 @@ import { tiles } from '../utils/pixelArt';
 
 const GROUND_H = 96;
 const POLE_H = 320;
-const POLE_RIGHT = 430;      // pole distance from right edge
-const MARIO_AT_POLE = 462;   // mario stops just left of the pole
-const MARIO_DOOR = 200;      // castle door position
+const POLE_RIGHT = 430;       // pole distance from right edge
+const MARIO_AT_POLE = 462;    // mario grabs the pole here
+const MARIO_JUMP_FROM = 590;  // run stops here, then leaps to the pole
+const MARIO_DOOR = 200;       // castle door position
 const GRAB_BOTTOM = GROUND_H + 195;
 
 // phase timings (ms)
 const SEQUENCE = [
-  ['run', 2400],
-  ['grab', 350],
+  ['run', 2200],
+  ['jump', 480],
   ['slide', 1300],
   ['pause', 420],
   ['walk', 1500],
@@ -218,8 +219,8 @@ const GroundStrip = styled.div`
 
 const MarioImg = styled.img`
   position: absolute;
-  width: 58px;
-  height: auto;
+  height: 60px;
+  width: auto;
   image-rendering: pixelated;
   z-index: 4;
 
@@ -249,13 +250,19 @@ const CastleImg = styled.img`
 `;
 
 function marioStyleFor(phase) {
+  const jumpFrom = `calc(100% - ${MARIO_JUMP_FROM}px)`;
   const atPole = `calc(100% - ${MARIO_AT_POLE}px)`;
   const atDoor = `calc(100% - ${MARIO_DOOR}px)`;
   switch (phase) {
     case 'run':
-      return { left: atPole, bottom: GROUND_H, transition: 'left 2.4s linear' };
-    case 'grab':
-      return { left: atPole, bottom: GRAB_BOTTOM, transition: 'bottom 0.3s ease-out' };
+      return { left: jumpFrom, bottom: GROUND_H, transition: 'left 2.2s linear' };
+    case 'jump':
+      // leap from a distance up onto the pole
+      return {
+        left: atPole,
+        bottom: GRAB_BOTTOM,
+        transition: 'left 0.45s linear, bottom 0.45s cubic-bezier(0.2, 0.9, 0.4, 1)',
+      };
     case 'slide':
       return { left: atPole, bottom: GROUND_H, transition: 'bottom 1.25s linear' };
     case 'pause':
@@ -289,6 +296,7 @@ const MarioEndScene = () => {
       timersRef.current.push(
         setTimeout(() => {
           setPhase(name);
+          if (name === 'jump') sfx.jump();
           if (name === 'slide') sfx.flag();
         }, elapsed),
       );
@@ -394,7 +402,7 @@ const MarioEndScene = () => {
         src={T.flag}
         alt=""
         style={{
-          bottom: flagDown ? GROUND_H + 14 : GROUND_H + POLE_H - 66,
+          bottom: flagDown ? GROUND_H + 12 : GROUND_H + POLE_H - 58,
           transition: 'bottom 1.25s linear',
         }}
       />
