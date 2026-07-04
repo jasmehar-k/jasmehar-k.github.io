@@ -4,14 +4,13 @@ import styled from 'styled-components';
 // three.js only loads for first-time visitors who actually see the intro
 const ArcadeIntro = lazy(() => import('./ArcadeIntro'));
 
+/* deliberately unpositioned: the sections must keep the plain body
+   containing block so absolutely-positioned scenes size like before */
 const AppShell = styled.div`
-  position: relative;
   min-height: 100vh;
 `;
 
 const PortfolioLayer = styled.div`
-  position: relative;
-  z-index: 1;
   opacity: ${({ $phase }) => ($phase === 'portfolio' ? 1 : 0)};
   visibility: ${({ $phase }) => ($phase === 'intro3d' ? 'hidden' : 'visible')};
   pointer-events: ${({ $phase }) => ($phase === 'portfolio' ? 'auto' : 'none')};
