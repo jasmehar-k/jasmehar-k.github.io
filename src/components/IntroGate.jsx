@@ -25,6 +25,15 @@ function alreadySeen() {
   }
 }
 
+// phones and tablets go straight to the site — no 3d intro, no three.js download
+function isMobile() {
+  try {
+    return window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+  } catch {
+    return false;
+  }
+}
+
 function markSeen() {
   try {
     sessionStorage.setItem('arcadeSeen', '1');
@@ -34,7 +43,7 @@ function markSeen() {
 }
 
 function IntroGate({ children }) {
-  const [phase, setPhase] = useState(() => (alreadySeen() ? 'portfolio' : 'intro3d'));
+  const [phase, setPhase] = useState(() => (alreadySeen() || isMobile() ? 'portfolio' : 'intro3d'));
 
   useEffect(() => {
     document.body.style.overflow = phase === 'portfolio' ? '' : 'hidden';
