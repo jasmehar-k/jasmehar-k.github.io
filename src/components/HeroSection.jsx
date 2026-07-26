@@ -670,9 +670,9 @@ const HeroSection = () => {
         </MessageBox>
 
         <ButtonGroup>
-            <ScrollButton to="skills" smooth={true} duration={500} color="#fbbc04">SKILLS</ScrollButton>
             <ScrollButton to="experience" smooth={true} duration={500}color="#ea4335">EXPERIENCE</ScrollButton>
             <ScrollButton to="projects" smooth={true} duration={500}color="#5fbb5a">PROJECTS</ScrollButton>
+            <ScrollButton to="skills" smooth={true} duration={500} color="#fbbc04">SKILLS</ScrollButton>
         </ButtonGroup>
             <ScrollButton to="about" smooth={true} duration={500} color="#727678" marginTop="2rem">↓ About Me</ScrollButton>
 

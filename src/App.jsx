@@ -16,9 +16,9 @@ function App() {
         <Navbar />
         <HeroSection />
         <AboutSection id="about" />
-        <SkillsSection id="skills" />
         <ExperienceSection id="experience" />
         <ProjectsSection id="projects" />
+        <SkillsSection id="skills" />
         <MarioEndScene />
       </IntroGate>
     </>
