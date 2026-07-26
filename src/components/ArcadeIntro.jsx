@@ -434,7 +434,7 @@ function drawMarquee(ctx, w, h) {
   ctx.fillText('JASMEHAR', w / 2, h * 0.48);
   ctx.fillStyle = '#fffef7';
   ctx.font = `${Math.round(h * 0.15)}px "Press Start 2P", monospace`;
-  ctx.fillText('ARCADE PORTFOLIO', w / 2, h * 0.76);
+  ctx.fillText('PORTFOLIO', w / 2, h * 0.76);
 
   // corner stars
   ctx.fillStyle = '#f8d878';
