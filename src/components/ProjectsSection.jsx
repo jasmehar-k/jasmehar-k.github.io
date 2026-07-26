@@ -15,6 +15,7 @@ import breadboard from '../assets/breadboard.png';
 import visionCAD from '../assets/visionCAD.png';
 import dill_pkl from '../assets/dill_pkl.png';
 import pelican from '../assets/pelican.png';
+import handShakeImg from '../assets/hand_shake.png';
 import { FaAward, FaGithub } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 
@@ -177,6 +178,7 @@ const LevelBadge = styled.span`
 `;
 
 const projectGitHubLinks = {
+  handShake: 'https://github.com/jasmehar-k/hand.shake',
   dillPkl: 'https://github.com/jasmehar-k/dill.pkl',
   iClick: 'https://github.com/jasmehar-k/iClick',
   visionCAD: 'https://github.com/jasmehar-k/VisionCAD',
@@ -193,6 +195,31 @@ const ProjectsSection = () => {
     <ProjectsContainer id="projects">
       <Title>Projects</Title>
       <ProjectGrid>
+        <ProjectCard>
+          <LinkIcons>
+            <ProjectLinkIcon href={projectGitHubLinks.handShake} target="_blank" rel="noopener noreferrer" aria-label="hand.shake GitHub repository">
+              <FaGithub />
+            </ProjectLinkIcon>
+            <ProjectLinkIcon href="https://devpost.com/software/hand-shake-wg3x9y" target="_blank" rel="noopener noreferrer" aria-label="hand.shake Devpost page">
+              <Icon icon="simple-icons:devpost" />
+            </ProjectLinkIcon>
+          </LinkIcons>
+              <ProjectName>hand.shake</ProjectName>
+              <SkillTags>
+                  <SkillTag>Python</SkillTag>
+                  <SkillTag>Raspberry Pi 5</SkillTag>
+                  <SkillTag>Computer Vision</SkillTag>
+                  <SkillTag>OpenRouter</SkillTag>
+                  <SkillTag>QNX</SkillTag>
+                  <SkillTag>Tendon Actuation</SkillTag>
+              </SkillTags>
+              <ImageWrapper>
+                  <img src={handShakeImg} alt="hand.shake grip-assist glove holding a water bottle" />
+              </ImageWrapper>
+              <Description>
+              Wearable grip-assist glove that identifies an object through an onboard camera and vision model, then drives a tendon-actuated finger toward a matched force target, boosting the user&apos;s grip. Live force and grip telemetry stream to a HUD dashboard.
+              </Description>
+        </ProjectCard>
         <ProjectCard>
           <LinkIcons>
               <ProjectLinkIcon href="https://github.com/jasmehar-k/pelican" target="_blank" rel="noopener noreferrer">
