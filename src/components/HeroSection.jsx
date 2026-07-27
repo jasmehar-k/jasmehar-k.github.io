@@ -219,29 +219,36 @@ const PipeLabel = styled.span`
   }
 `;
 
-/* The two sprites are tight crops of the same character but different shapes —
-   the running pose is far wider than the standing one (0.84 vs 0.56). Fitting
-   both into one fixed box makes the running frame land 14px shorter, so they
-   are matched on height instead and centred over the collision box. */
+/* The two sprites frame their character very differently, so sizing both to the
+   same box leaves the running one visibly shorter. Measured from the files:
+   the run gif's Mario fills ~85.6% of its 160px frame (it carries 15-30px of
+   headroom, and the content bobs between 130 and 145px as he runs), while the
+   standing png's fills ~94.7% of its 876px frame.
+   Each sprite is therefore given the frame height that makes the *character*
+   MARIO_H tall, plus a nudge down so the feet sit on the ground either way. */
+const SPRITES = {
+  idle: { src: marioIdle, frame: 80, drop: 1 },
+  run: { src: marioRun, frame: 89, drop: 2 },
+};
+
 const MarioBox = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
   width: ${MARIO_W}px;
   height: ${MARIO_H}px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
   pointer-events: none;
   will-change: transform;
 `;
 
 const MarioSprite = styled.img`
-  height: 100%;
+  position: absolute;
+  left: 50%;
+  bottom: ${({ $drop }) => -$drop}px;
+  height: ${({ $frame }) => $frame}px;
   width: auto;
-  /* flex would otherwise squash the wider running frame back to the box */
-  flex: none;
   max-width: none;
+  transform: translateX(-50%);
   image-rendering: pixelated;
 `;
 
@@ -610,7 +617,12 @@ const HeroSection = () => {
       ))}
 
       <MarioBox ref={marioRef} aria-hidden="true" style={{ zIndex: behind ? 3 : 5 }}>
-        <MarioSprite src={moving ? marioRun : marioIdle} alt="" />
+        <MarioSprite
+          src={(moving ? SPRITES.run : SPRITES.idle).src}
+          $frame={(moving ? SPRITES.run : SPRITES.idle).frame}
+          $drop={(moving ? SPRITES.run : SPRITES.idle).drop}
+          alt=""
+        />
       </MarioBox>
 
       <Touch>
