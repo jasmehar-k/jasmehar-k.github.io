@@ -1,172 +1,221 @@
-import React from 'react';
+// The SMB status bar, standing in for a nav bar. The readouts are live: the
+// score ticks up as you scroll, coins count the sections you've reached, and
+// WORLD tracks whichever section you're currently in.
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-scroll';
-import { FaLinkedin, FaGithub, FaEnvelope, FaFilePdf, FaFileAlt } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaEnvelope, FaFileAlt } from 'react-icons/fa';
+import { NES } from '../utils/pixelSprite';
 
+// Each section gets a world number, the way the game labels its levels, plus
+// the colour of the section itself so the bar melts into whatever is under it
+// instead of sitting on the page as a black slab.
+const WORLDS = [
+  { id: 'hero', world: '1-1', bg: NES.sky },
+  { id: 'about', world: '1-2', bg: '#3b9aff' },
+  { id: 'experience', world: '1-3', bg: '#3b9aff' },
+  { id: 'projects', world: '2-2', bg: NES.water },
+  { id: 'skills', world: '1-4', bg: '#3b9aff' },
+];
 
-const Nav = styled.nav`
+const START_TIME = 400;
+
+const Bar = styled.nav`
   position: fixed;
   top: 0;
-  width: 100%;
-  background: #5b5b5b;
-  color: white;
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;       // ✅ allow wrapping of navbar sections
-  font-family: 'Press Start 2P', cursive;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;  // ✅ prevent cutting from padding
-  overflow-x: auto;        // ✅ optional: horizontal scroll instead of cutting off
-  gap: 1rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 16px;
-  }
-`;
-
-
-const NavSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;       
-  gap: 12px;
-  justify-content: center;
-`;
-
-
-
-const PixelButton = styled.a`
-  background-color: #ffcc00;
-  color: #000;
-  padding: 10px 16px;
-  font-size: 0.6rem;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0 #000;
-  text-decoration: none;
-  border-radius: 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #ffe066;
-    transform: translateY(-2px);
-    box-shadow: 6px 6px 0 #000;
-  }
-
-  &:active {
-    transform: translateY(2px);
-    box-shadow: 2px 2px 0 #000;
-  }
-  @media (max-width: 600px) {
-    &:hover {
-      transform: none; /* Disable transform on hover for small screens */
-    }
-`;
-
-// const ScrollLink = styled(Link).attrs({
-//   smooth: true,
-//   duration: 500,
-//   offset: -80, // account for navbar height
-// })`
-//   background-color: #ffcc00;
-//   color: #000;
-//   padding: 10px 16px;
-//   font-size: 0.6rem;
-//   border: 3px solid #000;
-//   box-shadow: 4px 4px 0 #000;
-//   text-decoration: none;
-//   border-radius: 0;
-//   cursor: pointer;
-//   transition: all 0.2s ease;
-
-//   &:hover {
-//     background-color: #ffe066;
-//     transform: translateY(-2px);
-//     box-shadow: 6px 6px 0 #000;
-//   }
-
-//   &:active {
-//     transform: translateY(2px);
-//     box-shadow: 2px 2px 0 #000;
-//   }
-// `;
-
-
-const IconButton = styled.a`
-  background-color: #ffcc00;
-  color: #000;
-  padding: 10px 14px;
-  font-size: 1.2rem;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0 #000;
-  text-decoration: none;
-  border-radius: 0;
-  cursor: pointer;
+  background: ${({ $bg }) => $bg};
+  color: ${NES.white};
+  font-family: 'Press Start 2P', cursive;
+  padding: 0.85rem 1.6rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  justify-content: space-between;
+  gap: 1.5rem;
+  /* the HUD is unboxed like the game's, so the type needs its own contrast */
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.45);
+  transition: background 0.45s ease;
 
-  &:hover {
-    background-color: #ffe066;
-    transform: translateY(-2px);
-    box-shadow: 6px 6px 0 #000;
+  @media (max-width: 900px) {
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 0.7rem 1rem;
   }
-
-  &:active {
-    transform: translateY(2px);
-    box-shadow: 2px 2px 0 #000;
-  }
-      @media (max-width: 600px) {
-    &:hover {
-      transform: none; /* Disable transform on hover for small screens */
-    }
 `;
 
-const ScrollLink = styled(Link).attrs({
-    smooth: true,
-    duration: 500,
-    offset: -80, 
-})`
-  background-color: #ffcc00;
-  
-  color: black;
-  border: none;
-  margin-top: ${({ marginTop }) => marginTop || '0'};
-  padding: 0.75rem 1.5rem;
+const Stats = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1rem, 3.5vw, 3rem);
+`;
+
+const Stat = styled.div`
   font-size: 0.6rem;
-  cursor: pointer;
-  border: 4px solid #2f2f2f;
-  box-shadow: inset -4px -4px 0px rgba(0,0,0,0.3);
-  font-family: 'Press Start 2P', cursive;
-  text-decoration: none;
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+
+  @media (max-width: 900px) {
+    font-size: 0.5rem;
+  }
+`;
+
+const Coin = styled.span`
   display: inline-block;
-  transition: all 0.2s ease;
+  width: 9px;
+  height: 11px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  background: ${NES.qMid};
+  box-shadow: inset 0 0 0 2px #fbd000, 0 0 0 2px ${NES.black};
+`;
+
+const Blink = styled.span`
+  /* the game blinks the coin marker between frames */
+  animation: coinBlink 0.8s steps(1) infinite;
+
+  @keyframes coinBlink {
+    50% {
+      opacity: 0.35;
+    }
+  }
+`;
+
+const Links = styled.div`
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 2vw, 1.6rem);
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+/* The bar sits on a different blue in every section, so hover is an underline
+   rather than a tint — any colour would have to read against all of them. */
+const NavLink = styled(Link).attrs({ smooth: true, duration: 600, offset: -90 })`
+  color: ${NES.white};
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.15s ease;
+
+  /* colour is restated here on purpose: index.css still carries Vite's stock
+     "a:hover { color: #535bf2 }", which outranks a plain styled class and
+     would otherwise recolour the link on hover */
+  &:hover,
+  &.active {
+    color: ${NES.white};
+    border-bottom-color: ${NES.white};
+  }
+
+  @media (max-width: 900px) {
+    font-size: 0.48rem;
+  }
+`;
+
+const IconLink = styled.a`
+  color: ${NES.white};
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 0.2rem;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.15s ease;
 
   &:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-    box-shadow: 6px 6px 0 #000;
+    color: ${NES.white};
+    border-bottom-color: ${NES.white};
   }
-
-  &:active {
-    transform: translateY(2px);
-    box-shadow: inset -2px -2px 0px rgba(0,0,0,0.3);
-  }
-  @media (max-width: 600px) {
-    &:hover {
-      transform: none; /* Disable transform on hover for small screens */
-    }
 `;
+
+const pad = (n, len) => String(Math.max(0, Math.floor(n))).padStart(len, '0');
 
 const Navbar = () => {
+  const [score, setScore] = useState(0);
+  const [world, setWorld] = useState(0);
+  // score and coins are winnings, not a scroll position: they only ever go up,
+  // so backtracking doesn't take them away again
+  const [coins, setCoins] = useState(0);
+  const [time, setTime] = useState(START_TIME);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    const read = () => {
+      rafRef.current = 0;
+      const y = window.scrollY;
+      setScore((s) => Math.max(s, Math.floor(y / 6)));
+
+      // the current level is the last section whose top has passed the upper
+      // third of the viewport
+      const mark = window.innerHeight * 0.35;
+      let current = 0;
+      WORLDS.forEach((w, i) => {
+        const el = document.getElementById(w.id);
+        if (el && el.getBoundingClientRect().top <= mark) current = i;
+      });
+      // WORLD follows you back up the page; coins are banked
+      setWorld((w) => (w === current ? w : current));
+      setCoins((c) => Math.max(c, current));
+    };
+
+    const onScroll = () => {
+      if (!rafRef.current) rafRef.current = requestAnimationFrame(read);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    read();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // the game's clock runs faster than real time
+  useEffect(() => {
+    const id = setInterval(() => setTime((t) => (t > 0 ? t - 1 : 0)), 700);
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <Nav>
-      <NavSection>
-        <IconButton
+    <Bar $bg={WORLDS[world].bg}>
+      <Stats>
+        <Stat>
+          MARIO
+          <br />
+          {pad(score, 6)}
+        </Stat>
+        <Stat>
+          <Blink>
+            <Coin />
+          </Blink>
+          x{pad(coins, 2)}
+        </Stat>
+        <Stat>
+          WORLD
+          <br />
+          {WORLDS[world].world}
+        </Stat>
+        <Stat>
+          TIME
+          <br />
+          {pad(time, 3)}
+        </Stat>
+      </Stats>
+
+      <Links>
+        <NavLink to="about">ABOUT</NavLink>
+        <NavLink to="experience">EXPERIENCE</NavLink>
+        <NavLink to="projects">PROJECTS</NavLink>
+        <NavLink to="skills">SKILLS</NavLink>
+
+        <IconLink
           href="https://www.linkedin.com/in/jasmehar-kaur"
           target="_blank"
           rel="noopener noreferrer"
@@ -174,8 +223,8 @@ const Navbar = () => {
           title="LinkedIn"
         >
           <FaLinkedin />
-        </IconButton>
-        <IconButton
+        </IconLink>
+        <IconLink
           href="/Jasmehar-Kaur-Resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
@@ -183,15 +232,11 @@ const Navbar = () => {
           title="Resume"
         >
           <FaFileAlt />
-        </IconButton>
-        <IconButton
-          href="mailto:jasmehar.kr@gmail.com"
-          aria-label="Email"
-          title="Email"
-        >
+        </IconLink>
+        <IconLink href="mailto:jasmehar.kr@gmail.com" aria-label="Email" title="Email">
           <FaEnvelope />
-        </IconButton>
-        <IconButton
+        </IconLink>
+        <IconLink
           href="https://github.com/jasmehar-k"
           target="_blank"
           rel="noopener noreferrer"
@@ -199,15 +244,9 @@ const Navbar = () => {
           title="GitHub"
         >
           <FaGithub />
-        </IconButton>
-      </NavSection>
-
-      <NavSection>
-        <ScrollLink to="experience" color="#ffcc00">Experience</ScrollLink>
-        <ScrollLink to="projects" color="#ffcc00">Projects</ScrollLink>
-        <ScrollLink to="skills" color="#ffcc00">Skills</ScrollLink>
-      </NavSection>
-    </Nav>
+        </IconLink>
+      </Links>
+    </Bar>
   );
 };
 
