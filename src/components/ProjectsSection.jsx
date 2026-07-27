@@ -570,33 +570,6 @@ const TrailBubble = styled.span`
   transition: opacity 0.3s ease;
 `;
 
-/* ───────────────────────────── status bar ───────────────────────────── */
-
-const Hud = styled.div`
-  position: absolute;
-  top: ${WATER_TOP + 18}px;
-  left: 0;
-  right: 0;
-  z-index: 8;
-  display: flex;
-  justify-content: center;
-  gap: clamp(1.2rem, 5vw, 4rem);
-  color: #fcfcfc;
-  font-size: 0.6rem;
-  line-height: 1.9;
-  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.65);
-  pointer-events: none;
-
-  @media (max-width: 900px) {
-    display: none;
-  }
-`;
-
-const HudCell = styled.div`
-  text-align: center;
-  white-space: nowrap;
-`;
-
 const ScrollHint = styled.div`
   position: absolute;
   left: 50%;
@@ -851,8 +824,6 @@ const TRAIL = [
   { size: 5, dur: 1.7, delay: 0.7 },
 ];
 
-const pad = (n, len) => String(Math.max(0, Math.round(n))).padStart(len, '0');
-
 // memoised: the level re-renders as the HUD ticks, but card content never changes
 const CardFace = React.memo(({ project }) => (
   <>
@@ -915,7 +886,6 @@ const ProjectsSection = () => {
   const pathRef = useRef([]);
   const pathKeyRef = useRef('');
 
-  const [revealed, setRevealed] = useState(0);
   const [moving, setMoving] = useState(false);
   const [facing, setFacing] = useState(1);
   const [started, setStarted] = useState(false);
@@ -1004,7 +974,6 @@ const ProjectsSection = () => {
       const trackW = track.getBoundingClientRect().width;
       const pan = Math.max(0, trackW - vw);
       const slot = readVar(section, '--slot');
-      const lead = readVar(section, '--lead');
       const outro = readVar(section, '--outro');
 
       // where mario is in the level's own coordinate space
@@ -1030,12 +999,6 @@ const ProjectsSection = () => {
         setFacing((f) => (f === dir ? f : dir));
       }
 
-      // cards surface as they enter from the right, and stay up once seen
-      let count = 0;
-      for (let k = 0; k < PROJECTS.length; k += 1) {
-        if (lead + k * slot + slot / 2 - p * pan < vw * 0.95) count += 1;
-      }
-      setRevealed((c) => (count > c ? count : c));
       setStarted((s) => s || p > 0.04);
 
       setMoving(true);
@@ -1180,23 +1143,6 @@ const ProjectsSection = () => {
           </PipeExit>
         </FrontLayer>
 
-        <Hud>
-          <HudCell>
-            MARIO
-            <br />
-            {pad(revealed * 5000, 6)}
-          </HudCell>
-          <HudCell>
-            FOUND
-            <br />
-            {pad(revealed, 2)}/{PROJECTS.length}
-          </HudCell>
-          <HudCell>
-            WORLD
-            <br />
-            2-2
-          </HudCell>
-        </Hud>
 
         <ScrollHint $show={!started}>SCROLL DOWN TO SWIM RIGHT</ScrollHint>
       </Stage>
