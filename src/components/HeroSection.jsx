@@ -219,16 +219,30 @@ const PipeLabel = styled.span`
   }
 `;
 
-const Mario = styled.img`
+/* The two sprites are tight crops of the same character but different shapes —
+   the running pose is far wider than the standing one (0.84 vs 0.56). Fitting
+   both into one fixed box makes the running frame land 14px shorter, so they
+   are matched on height instead and centred over the collision box. */
+const MarioBox = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
   width: ${MARIO_W}px;
   height: ${MARIO_H}px;
-  object-fit: contain;
-  image-rendering: pixelated;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   pointer-events: none;
   will-change: transform;
+`;
+
+const MarioSprite = styled.img`
+  height: 100%;
+  width: auto;
+  /* flex would otherwise squash the wider running frame back to the box */
+  flex: none;
+  max-width: none;
+  image-rendering: pixelated;
 `;
 
 const TitleArea = styled.div`
@@ -577,7 +591,7 @@ const HeroSection = () => {
 
       <TitleArea>
         <Title>HI! I&apos;M JASMEHAR</Title>
-        <Subtitle>SOFTWARE ENGINEERING @ UWATERLOO · AI + FULL STACK</Subtitle>
+        <Subtitle>SOFTWARE ENGINEERING @ UWATERLOO</Subtitle>
         <br />
         <Hint>ARROWS OR WASD TO MOVE · UP TO JUMP · STAND ON A PIPE TO ENTER · OR CLICK ONE</Hint>
       </TitleArea>
@@ -595,13 +609,9 @@ const HeroSection = () => {
         </PipeWrap>
       ))}
 
-      <Mario
-        ref={marioRef}
-        src={moving ? marioRun : marioIdle}
-        alt=""
-        aria-hidden="true"
-        style={{ zIndex: behind ? 3 : 5 }}
-      />
+      <MarioBox ref={marioRef} aria-hidden="true" style={{ zIndex: behind ? 3 : 5 }}>
+        <MarioSprite src={moving ? marioRun : marioIdle} alt="" />
+      </MarioBox>
 
       <Touch>
         <TouchGroup>
