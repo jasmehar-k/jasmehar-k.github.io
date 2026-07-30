@@ -1,48 +1,142 @@
-import React, { useRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import flag from '../assets/flag.png'; 
-import marioSlide from '../assets/mario_slide.png'; 
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { overworld } from '../utils/overworldArt';
+import { NES } from '../utils/pixelSprite';
+import { marioSprite } from '../utils/marioSprite';
+import marioStand from '../assets/mario_slide.png';
+import climbA from '../assets/mario_climb_a.png';
+import climbB from '../assets/mario_climb_b.png';
+
+const TILE = 40;
+const GROUND_H = TILE * 2;
+const VINE_W = 40;
+const VINE_TOP = 210; // where the vine emerges from its block
+const CHAR_H = 76;
+const CHAR_W = 52;
+
+// Two stills cut from the run gif, cropped to a shared box so he stays
+// registered as the limbs change. Alternating them off scroll distance rather
+// than playing the gif keeps the climb at the pace you are actually scrolling.
+// The crops are 110x145 with 140px of character, hence the frame height.
+const CLIMB_FRAME_H = Math.round((CHAR_H * 145) / 140);
+const SWAP_PX = 22; // travel between frame swaps
+
+// Climbing alternates two stills off scroll distance. At the foot of the vine he
+// lets go and just stands there — the frame is derived from his *clamped*
+// position, so once he can descend no further it stops advancing on its own and
+// his legs go still however much further you scroll.
+const CLIMB = { frame: CLIMB_FRAME_H, drop: 0, nudge: 0 };
+const STAND = marioSprite('idle', CHAR_H);
+
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(v, hi));
+
+const drift = keyframes`
+  from { transform: translateX(-220px); }
+  to   { transform: translateX(calc(100vw + 220px)); }
+`;
 
 const ExperienceSection = styled.section`
-  background-color: #3b9aff;
-  padding: 5rem 2rem;
+  background-color: ${NES.sky};
+  padding: 5rem 2rem ${GROUND_H + 70}px;
   font-family: 'Press Start 2P', cursive;
   position: relative;
-  border-bottom: 4px solid #2f2f2f;
+  overflow: hidden;
+`;
 
+const Cloud = styled.div`
+  position: absolute;
+  /* a fraction of the section, so they carry the whole way down rather than
+     bunching at the top; the lowest stops well clear of the bushes */
+  top: ${({ $top }) => $top};
+  width: ${({ $w }) => $w}px;
+  height: ${({ $w }) => Math.round(($w * 10) / 32)}px;
+  background-image: ${overworld.cloud};
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  animation: ${drift} linear infinite;
+  z-index: 0;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const Ground = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: ${GROUND_H}px;
+  background-image: ${overworld.soil};
+  background-size: ${TILE}px ${TILE}px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  z-index: 5;
+`;
+
+const Bush = styled.div`
+  position: absolute;
+  bottom: ${GROUND_H}px;
+  width: ${({ $w }) => $w}px;
+  height: ${({ $w }) => Math.round(($w * 7) / 24)}px;
+  background-image: ${overworld.bush};
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  z-index: 4;
+  pointer-events: none;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 const SectionTitle = styled.h2`
+  position: relative;
+  z-index: 1; /* above the clouds, which are positioned and would cover it */
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 8rem;
   color: #2f2f2f;
 `;
 
-const Timeline = styled.div`
+/* The stem thins and curls over at the top, so the vine reads as a growing
+   shoot rather than a bar chopped off mid-air. */
+const VineTip = styled.div`
   position: absolute;
-  top: 10rem;
-  bottom: 0;
+  top: ${VINE_TOP}px;
   left: 50%;
-  transform: translateX(-50%);
-  width: 8px;
-  background-color: #2f2f2f;
+  width: ${VINE_W}px;
+  height: ${VINE_W}px;
+  margin-left: -${VINE_W / 2}px;
+  background-image: ${overworld.vineTip};
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  z-index: 1;
+
   @media (max-width: 600px) {
     display: none;
   }
-
 `;
 
-const Flag = styled.img`
+/* The vine tile repeats down the section, so the leaves keep alternating
+   whatever the section's height turns out to be. */
+const Vine = styled.div`
   position: absolute;
-  top: 10rem;
-  left: calc(50%);
-  width: 150px;
+  top: ${VINE_TOP + VINE_W}px;
+  bottom: ${GROUND_H}px;
+  left: 50%;
+  width: ${VINE_W}px;
+  margin-left: -${VINE_W / 2}px;
+  background-image: ${overworld.vine};
+  background-size: ${VINE_W}px ${VINE_W}px;
+  background-repeat: repeat-y;
   image-rendering: pixelated;
+  z-index: 1;
+
   @media (max-width: 600px) {
     display: none;
   }
-
 `;
 
 const ExperienceItem = styled.div`
@@ -70,21 +164,6 @@ const ExperienceItem = styled.div`
     &:hover {
       transform: none; /* Disable transform on hover for small screens */
     }
-`;
-
-const Connector = styled.div`
-  position: absolute;
-  top: 1rem;
-  width: 20px;
-  height: 20px;
-  background-color: #ffcc00;
-  border: 4px solid #2f2f2f;
-  border-radius: 50%;
-  left: ${({ align }) => (align === 'left' ? 'calc(100% - 10px)' : '-10px')};
-  @media (max-width: 600px) {
-    display: none;
-  }
-
 `;
 
 const Card = styled.div`
@@ -211,18 +290,36 @@ const IncomingTag = styled.span`
   letter-spacing: 1px;
 `;
 
-const MarioSlide = styled.img`
+/* He hangs on the vine rather than beside it: the box is nudged right of centre
+   so the stem runs behind his body. */
+const Climber = styled.div`
   position: absolute;
-  left: calc(50% - 30px);
-  width: 50px;
-  image-rendering: pixelated;
-  transition: top 0.1s ease-out, opacity 0.3s;
-  opacity: ${({ $animate }) => ($animate ? 1 : 0)};
-  top: ${({ $top }) => `${$top}px`};
-  z-index: 10;
+  top: 0;
+  left: 50%;
+  width: ${CHAR_W}px;
+  height: ${CHAR_H}px;
+  margin-left: -${CHAR_W / 2 - 6}px;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform;
+
   @media (max-width: 600px) {
     display: none;
   }
+`;
+
+const ClimberSprite = styled.img`
+  position: absolute;
+  left: 50%;
+  bottom: ${({ $drop }) => -$drop}px;
+  height: ${({ $frame }) => $frame}px;
+  width: auto;
+  max-width: none;
+  /* mirrored to face the vine while climbing, the right way round once he lets
+     go and runs off */
+  transform: translateX(calc(-50% - ${({ $nudge }) => $nudge}px))
+    scaleX(${({ $flip }) => ($flip ? -1 : 1)});
+  image-rendering: pixelated;
 `;
 
 
@@ -329,58 +426,116 @@ const ExperienceCard = ({ exp }) => {
   );
 };
 
+const CLOUDS = [
+  { top: '5%', w: 170, dur: 100, delay: 0 },
+  { top: '19%', w: 120, dur: 76, delay: -34 },
+  { top: '33%', w: 200, dur: 124, delay: -62 },
+  { top: '47%', w: 140, dur: 92, delay: -18 },
+  { top: '61%', w: 180, dur: 110, delay: -80 },
+  { top: '74%', w: 130, dur: 84, delay: -45 },
+];
+
+const BUSHES = [
+  { left: '6%', w: 150 },
+  { left: '78%', w: 120 },
+];
+
 const ExperienceTimeline = () => {
-    const sectionRef = useRef(null);
-    const [animateMario, setAnimateMario] = useState(false);
-    const [marioTop, setMarioTop] = useState(160); // Start 10rem = 160px
-    const marioRef = useRef();
-    
-    useEffect(() => {
-        const handleScroll = () => {
-          if (!sectionRef.current) return;
-      
-          const sectionTop = sectionRef.current.offsetTop;
-          const sectionHeight = sectionRef.current.offsetHeight;
-          const scrollY = window.scrollY + window.innerHeight / 2;
-      
-          // Show Mario if scrolled past the section top
-          if (window.scrollY >= sectionTop) {
-            setAnimateMario(true);
-      
-            // Calculate Mario's vertical position relative to the section top
-            const relativeScroll = window.scrollY - sectionTop + 180; // 160 = 10rem offset
-      
-            // Clamp Mario's top so he stays within the section
-            const maxTop = sectionHeight - 90; // 60 = Mario's height approx
-            const newMarioTop = Math.min(relativeScroll, maxTop);
-      
-            setMarioTop(newMarioTop);
-          } else {
-            // Before scrolling to section, hide Mario or set initial position
-            setAnimateMario(true);
-            setMarioTop(180);
-          }
-        };
-      
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Initial call on mount
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
-      
-      
+  const sectionRef = useRef(null);
+  const climberRef = useRef(null);
+  const rafRef = useRef(0);
+  const [step, setStep] = useState(0);
+  const [atFoot, setAtFoot] = useState(false);
+
+  // Vertical position and the climb frame come out of the scroll offset. The
+  // transform is written straight to the node because this runs every scroll
+  // frame; the two state values only change on a frame swap or at the handoff.
+  const place = useCallback(() => {
+    rafRef.current = 0;
+    const el = sectionRef.current;
+    const climber = climberRef.current;
+    if (!el || !climber) return;
+
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight || 800;
+    const top = VINE_TOP + VINE_W + 8; // starts below the curled tip
+    const floor = rect.height - GROUND_H - CHAR_H - 6;
+    const rawY = vh * 0.45 - rect.top;
+    const y = clamp(rawY, top, Math.max(top, floor));
+
+    climber.style.transform = `translateY(${y}px)`;
+
+    // At the foot of the vine he lets go and stands. The margin stops him
+    // flicking between poses if you hover right on the boundary.
+    setAtFoot((v) => {
+      if (rawY >= floor) return true;
+      if (rawY < floor - 40) return false;
+      return v;
+    });
+
+    // frames advance with distance climbed, so the climb keeps pace with however
+    // fast you scroll — and reverses when you scroll back up
+    const frame = Math.floor(y / SWAP_PX) % 2;
+    setStep((f) => (f === frame ? f : frame));
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!rafRef.current) rafRef.current = requestAnimationFrame(place);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', place);
+    place();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', place);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [place]);
+
+  const sprite = atFoot ? STAND : CLIMB;
+  const src = atFoot ? marioStand : (step === 0 ? climbA : climbB);
 
   return (
     <ExperienceSection id="experience" ref={sectionRef}>
+      {CLOUDS.map((c) => (
+        <Cloud
+          key={c.top}
+          $top={c.top}
+          $w={c.w}
+          style={{ animationDuration: `${c.dur}s`, animationDelay: `${c.delay}s` }}
+        />
+      ))}
+
       <SectionTitle>Experience</SectionTitle>
-      <Flag src={flag} alt="flag" />
-      <Timeline />
-      <MarioSlide src={marioSlide} ref={marioRef} $animate={animateMario} $top={marioTop}/>
+
+      <VineTip />
+      <Vine />
+
+      <Climber ref={climberRef}>
+        <ClimberSprite
+          src={src}
+          $frame={sprite.frame}
+          $drop={sprite.drop}
+          $nudge={atFoot ? sprite.nudge : 0}
+          $flip={!atFoot}
+          alt=""
+          aria-hidden="true"
+        />
+      </Climber>
+
       {ExperienceData.map((exp, index) => (
         <ExperienceItem key={index} align={exp.align}>
-          <Connector align={exp.align} />
           <ExperienceCard exp={exp} />
         </ExperienceItem>
       ))}
+
+      {BUSHES.map((b) => (
+        <Bush key={b.left} $w={b.w} style={{ left: b.left }} />
+      ))}
+
+      <Ground />
     </ExperienceSection>
   );
 };
