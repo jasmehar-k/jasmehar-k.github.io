@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import myPhoto from '../assets/photo.png'; 
 
 const AboutWrapper = styled.section`
-  background-color: #3b9aff;
+  background-color: #5c94fc;
   padding: 5rem 2rem;
   font-family: 'Press Start 2P', cursive;
   min-height: 50vh;

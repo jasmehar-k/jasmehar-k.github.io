@@ -8,7 +8,7 @@ import block from '../assets/yellow_block.png';
 
 
 const SkillsWrapper = styled.section`
-  background-color: #3b9aff;
+  background-color: #5c94fc;
   padding: 4rem 2rem;
   font-family: 'Press Start 2P', cursive;
 `;
@@ -86,7 +86,7 @@ const SkillName = styled.div`
 `;
 
 const CertSection = styled.section`
-  background-color: #3b9aff;
+  background-color: #5c94fc;
   padding: 0rem 0rem;
   font-family: 'Press Start 2P', cursive;
   color: #2f2f2f;
