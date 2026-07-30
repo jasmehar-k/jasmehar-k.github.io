@@ -130,6 +130,49 @@ const STAIR = [
   'LKKKKKKKKKKKKKKK',
 ];
 
+/* Climbing vine: a stem with leaf clusters alternating left and right. Tiles
+   vertically, so the leaves keep alternating however long the vine is. */
+const VINE = [
+  '......DMML......',
+  '......DMML......',
+  '......DMMLDDD...',
+  '......DMMLMMMD..',
+  '......DMMLLMMD..',
+  '......DMMLDDD...',
+  '......DMML......',
+  '......DMML......',
+  '......DMML......',
+  '...DDDDMML......',
+  '..DMMMDMML......',
+  '..DMMLDMML......',
+  '...DDDDMML......',
+  '......DMML......',
+  '......DMML......',
+  '......DMML......',
+];
+
+/* Top of the vine: the stem thins and curls over into a shoot, so the vine ends
+   in a growing tip instead of a flat cut. Stem sits in the same columns as the
+   body tile so the two line up. */
+const VINE_TIP = [
+  '................',
+  '.........DD.....',
+  '........DMML....',
+  '.......DMMLD....',
+  '......DMMLD.....',
+  '......DMML......',
+  '......DMMLDDD...',
+  '......DMMLMMMD..',
+  '......DMMLLMMD..',
+  '......DMMLDDD...',
+  '......DMML......',
+  '......DMML......',
+  '......DMML......',
+  '......DMML......',
+  '......DMML......',
+  '......DMML......',
+];
+
 /* Flagpole pennant: white triangle pointing at the pole, green skull on it */
 const FLAG = [
   '..............WWWW',
@@ -182,6 +225,16 @@ export const overworld = {
     K: NES.black,
   }),
   flag: sprite(FLAG, { W: NES.white, G: NES.greenMid }),
+  vine: sprite(VINE, {
+    D: NES.greenDark,
+    M: NES.greenMid,
+    L: NES.greenLight,
+  }),
+  vineTip: sprite(VINE_TIP, {
+    D: NES.greenDark,
+    M: NES.greenMid,
+    L: NES.greenLight,
+  }),
   castleBrick: sprite(CASTLE_BRICK, {
     L: NES.castleMortar,
     M: NES.castleBrick,
