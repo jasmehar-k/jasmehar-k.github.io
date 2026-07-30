@@ -8,9 +8,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { scroller } from 'react-scroll';
 
-import marioRun from '../assets/mario_run.gif';
-import marioIdle from '../assets/mario_slide.png';
 import { overworld } from '../utils/overworldArt';
+import { marioSprite } from '../utils/marioSprite';
 import { NES } from '../utils/pixelSprite';
 import { sfx } from '../hooks/useSound';
 
@@ -163,7 +162,7 @@ const Ground = styled.div`
   right: 0;
   bottom: 0;
   height: ${GROUND_H}px;
-  background-image: ${overworld.ground};
+  background-image: ${overworld.soil};
   background-size: ${TILE}px ${TILE}px;
   background-repeat: repeat;
   image-rendering: pixelated;
@@ -245,19 +244,10 @@ const PipeLabel = styled.span`
   }
 `;
 
-/* The two sprites frame their character very differently, so sizing both to the
-   same box leaves the running one visibly shorter. Measured from the files:
-   the run gif's Mario fills ~85.6% of its 160px frame (it carries 15-30px of
-   headroom, and the content bobs between 130 and 145px as he runs), while the
-   standing png's fills ~94.7% of its 876px frame.
-   Each sprite is therefore given the frame height that makes the *character*
-   MARIO_H tall, plus a nudge down so the feet sit on the ground either way. */
-/* nudge: the character is not centred inside its own frame either — measured
-   at +1.6px (idle) and +6.1px (run, wandering as his limbs swing), so centring
-   the frame leaves the character itself off to the right. */
+/* Sprite metrics live in utils/marioSprite so the end scene can reuse them. */
 const SPRITES = {
-  idle: { src: marioIdle, frame: 80, drop: 1, nudge: 2 },
-  run: { src: marioRun, frame: 89, drop: 2, nudge: 6 },
+  idle: marioSprite('idle', MARIO_H),
+  run: marioSprite('run', MARIO_H),
 };
 
 const MarioBox = styled.div`
