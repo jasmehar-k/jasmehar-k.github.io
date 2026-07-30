@@ -41,13 +41,22 @@ const runway = (h) => {
   return RUN_SPEED * (rise + fall);
 };
 
+/* Pipe width has to shrink on narrow screens: the four pipes sit at fixed
+   percentages, so at 390px they are only 78px apart and a 108px rim makes them
+   physically overlap — lids included, which lands him on the wrong pipe. */
+const PIPE_SIZES = [
+  { max: 560, rim: 64, body: 54 },
+  { max: 900, rim: 88, body: 74 },
+];
 const PIPE_W = 92;
 const RIM_W = 108;
 const RIM_H = 28;
 
-// he only ducks in when his middle is genuinely over the mouth, not when a
-// corner of him happens to be clipping the lid
-const ENTER_TOLERANCE = PIPE_W * 0.3;
+// He only ducks in when his middle is genuinely over the mouth. This is a
+// fraction of each lid's *measured* width, so it scales with the responsive
+// pipe; at a flat 30% of PIPE_W it was 28px, enough to drop in visibly off.
+const ENTER_FRACTION = 0.16;
+const CENTRE_SPEED = 340; // px/s he slides onto the mouth as he sinks
 
 const PIPES = [
   { label: 'ABOUT', target: 'about', xPct: 0.2, h: 80 },
@@ -164,6 +173,9 @@ const Ground = styled.div`
 const PipeWrap = styled.button`
   position: absolute;
   bottom: ${GROUND_H}px;
+  /* centres on its own width, so it stays on the mark whether the rim or the
+     label happens to be the widest thing in the column */
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,12 +205,26 @@ const PipeRim = styled.span`
   height: ${RIM_H}px;
   ${pipeSkin(RIM_W)}
   box-shadow: inset 0 4px 0 ${NES.black}, inset 0 -4px 0 ${NES.black};
+
+  ${PIPE_SIZES.map((z) => `
+    @media (max-width: ${z.max}px) {
+      width: ${z.rim}px;
+      ${pipeSkin(z.rim)}
+    }
+  `).join('')}
 `;
 
 const PipeBody = styled.span`
   width: ${PIPE_W}px;
   height: ${({ $h }) => $h - RIM_H}px;
   ${pipeSkin(PIPE_W)}
+
+  ${PIPE_SIZES.map((z) => `
+    @media (max-width: ${z.max}px) {
+      width: ${z.body}px;
+      ${pipeSkin(z.body)}
+    }
+  `).join('')}
 `;
 
 const PipeLabel = styled.span`
@@ -226,9 +252,12 @@ const PipeLabel = styled.span`
    standing png's fills ~94.7% of its 876px frame.
    Each sprite is therefore given the frame height that makes the *character*
    MARIO_H tall, plus a nudge down so the feet sit on the ground either way. */
+/* nudge: the character is not centred inside its own frame either — measured
+   at +1.6px (idle) and +6.1px (run, wandering as his limbs swing), so centring
+   the frame leaves the character itself off to the right. */
 const SPRITES = {
-  idle: { src: marioIdle, frame: 80, drop: 1 },
-  run: { src: marioRun, frame: 89, drop: 2 },
+  idle: { src: marioIdle, frame: 80, drop: 1, nudge: 2 },
+  run: { src: marioRun, frame: 89, drop: 2, nudge: 6 },
 };
 
 const MarioBox = styled.div`
@@ -248,7 +277,7 @@ const MarioSprite = styled.img`
   height: ${({ $frame }) => $frame}px;
   width: auto;
   max-width: none;
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% - ${({ $nudge }) => $nudge}px));
   image-rendering: pixelated;
 `;
 
@@ -350,11 +379,14 @@ const TouchBtn = styled.button`
 
 /* ─────────────────────────────── the level ──────────────────────────── */
 
-const START = { x: 60, y: 0, vy: 0, facing: 1, mode: 'play', target: -1, phase: 'approach' };
+const START = {
+  x: 60, y: 0, vy: 0, facing: 1, mode: 'play', target: -1, phase: 'approach', enterX: 0,
+};
 
 const HeroSection = () => {
   const levelRef = useRef(null);
   const marioRef = useRef(null);
+  const rimRefs = useRef([]);
   const keys = useRef({});
   const state = useRef({ ...START });
   const layout = useRef({ w: 1200, pipes: [] });
@@ -372,12 +404,29 @@ const HeroSection = () => {
   // Pipe geometry in pixels. Recomputed on resize; the loop reads it by ref so
   // it never has to touch the DOM per frame.
   const measure = useCallback(() => {
-    const w = levelRef.current?.offsetWidth ?? 1200;
+    const level = levelRef.current;
+    if (!level) return;
+    const w = level.offsetWidth;
+    const lvl = level.getBoundingClientRect();
+
     layout.current = {
       w,
-      pipes: PIPES.map((p) => {
-        const cx = p.xPct * w;
-        return { ...p, cx, left: cx - PIPE_W / 2, right: cx + PIPE_W / 2, top: p.h };
+      // Read each lid's real position rather than deriving it. The pipe is
+      // centred by a negative margin of half the rim, which only actually
+      // centres it while the rim is the widest thing in the column — a longer
+      // label, or a different font metric, shifts the whole pipe off the mark.
+      pipes: PIPES.map((p, i) => {
+        const el = rimRefs.current[i];
+        if (!el) {
+          const cx = p.xPct * w;
+          return { ...p, cx, left: cx - RIM_W / 2, right: cx + RIM_W / 2, top: p.h,
+            tol: RIM_W * ENTER_FRACTION };
+        }
+        const r = el.getBoundingClientRect();
+        const left = r.left - lvl.left;
+        const right = r.right - lvl.left;
+        return { ...p, cx: (left + right) / 2, left, right, top: p.h,
+          tol: (right - left) * ENTER_FRACTION };
       }),
     };
   }, []);
@@ -385,6 +434,9 @@ const HeroSection = () => {
   useEffect(() => {
     measure();
     window.addEventListener('resize', measure);
+    // the pixel font loads after first paint and changes the label width, which
+    // moves the rim we just measured
+    document.fonts?.ready.then(measure).catch(() => {});
     return () => window.removeEventListener('resize', measure);
   }, [measure]);
 
@@ -424,8 +476,10 @@ const HeroSection = () => {
   }, []);
 
   const enterPipe = useCallback((index) => {
+    const p = layout.current.pipes[index];
     state.current.mode = 'enter';
     state.current.target = index;
+    state.current.enterX = p ? p.cx - MARIO_W / 2 : state.current.x;
     setBehind(true);
     sfx.pipe();
   }, []);
@@ -451,6 +505,11 @@ const HeroSection = () => {
       };
 
       if (s.mode === 'enter') {
+        // Slide onto the mouth while sinking, so he always goes down dead
+        // centre even when he landed nearer the edge of the lid.
+        const dx = s.enterX - s.x;
+        const step = CENTRE_SPEED * dt;
+        s.x += Math.abs(dx) <= step ? dx : Math.sign(dx) * step;
         s.y -= ENTER_SPEED * dt;
         if (s.y < -MARIO_H && !navigated.current) {
           navigated.current = true;
@@ -536,7 +595,7 @@ const HeroSection = () => {
       // middle and drop in.
       if (restingPipe >= 0) {
         const p = pipes[restingPipe];
-        if (Math.abs(s.x + MARIO_W / 2 - p.cx) <= ENTER_TOLERANCE) {
+        if (Math.abs(s.x + MARIO_W / 2 - p.cx) <= p.tol) {
           enterPipe(restingPipe);
           return;
         }
@@ -606,12 +665,12 @@ const HeroSection = () => {
       {PIPES.map((p, i) => (
         <PipeWrap
           key={p.target}
-          style={{ left: `${p.xPct * 100}%`, marginLeft: `-${RIM_W / 2}px` }}
+          style={{ left: `${p.xPct * 100}%` }}
           onClick={() => clickPipe(i)}
           aria-label={`Go to ${p.label.toLowerCase()}`}
         >
           <PipeLabel>{p.label}</PipeLabel>
-          <PipeRim />
+          <PipeRim ref={(el) => { rimRefs.current[i] = el; }} />
           <PipeBody $h={p.h} />
         </PipeWrap>
       ))}
@@ -621,6 +680,7 @@ const HeroSection = () => {
           src={(moving ? SPRITES.run : SPRITES.idle).src}
           $frame={(moving ? SPRITES.run : SPRITES.idle).frame}
           $drop={(moving ? SPRITES.run : SPRITES.idle).drop}
+          $nudge={(moving ? SPRITES.run : SPRITES.idle).nudge}
           alt=""
         />
       </MarioBox>
