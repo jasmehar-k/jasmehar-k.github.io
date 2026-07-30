@@ -149,7 +149,7 @@ const Sky = styled.div`
   left: 0;
   right: 0;
   height: ${SKY_H}px;
-  background: #3b9aff;
+  background: ${NES.sky};
   z-index: 1;
 `;
 

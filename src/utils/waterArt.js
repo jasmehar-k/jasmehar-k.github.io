@@ -4,19 +4,13 @@
 //
 // Rows are run-length encoded into <rect> spans so the data URIs stay small.
 
+import { BLOCK_TILE, NES as BASE } from './pixelSprite.js';
+
+// One palette, shared with the rest of the site so a colour can never be
+// changed in one place and not the other. Only the exit pipe differs: the
+// underwater one uses deeper greens than the overworld pipes.
 export const NES = {
-  sky: '#3b9aff',
-  water: '#2038ec',
-  waterDeep: '#1028a8',
-  white: '#fcfcfc',
-  black: '#000000',
-  mossLight: '#58d854',
-  mossMid: '#00a800',
-  mossDark: '#006800',
-  coral: '#f4707c',
-  coralDark: '#c03050',
-  fishRed: '#f83800',
-  fishDark: '#d82800',
+  ...BASE,
   pipeLight: '#7bd47f',
   pipeMid: '#43b047',
   pipeDark: '#0a3d0f',
@@ -57,26 +51,6 @@ const WATERLINE = [
   'BBBBBBBB',
 ];
 
-/* Mossy terrain block. One tile does all three jobs the game uses it for:
-   the seabed floor, stacked columns, and floating platforms. */
-const MOSS = [
-  'KKKKKKKKKKKKKKKK',
-  'KLLMMMMMMMMMMLLK',
-  'KLMMDDMMMMDDMMLK',
-  'KMMDDDMMMDDDMMMK',
-  'KMMMDMMMMMDMMMMK',
-  'KMMMMMMDMMMMMDMK',
-  'KMMDMMMDDMMMMDMK',
-  'KMMDDMMMMMMMDDMK',
-  'KMMMDMMMMMMMDMMK',
-  'KMMMMMMMDMMMMMMK',
-  'KMDMMMMDDMMMDMMK',
-  'KMDDMMMMMMMMDDMK',
-  'KMMDMMMMMMMMMDMK',
-  'KMMMMMMMMMMMMMMK',
-  'KDDMMMMMMMMMMDDK',
-  'KKKKKKKKKKKKKKKK',
-];
 
 /* Branching coral: a central stem with paired branches forking upward off it,
    repeating up the stalk — the fern silhouette the game uses */
@@ -148,7 +122,7 @@ const CHEEP = [
 
 export const art = {
   waterline: svg(WATERLINE, { S: NES.sky, W: NES.white, B: NES.water }),
-  moss: svg(MOSS, {
+  moss: svg(BLOCK_TILE, {
     K: NES.black,
     L: NES.mossLight,
     M: NES.mossMid,

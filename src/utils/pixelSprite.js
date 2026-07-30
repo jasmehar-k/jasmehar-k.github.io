@@ -23,9 +23,18 @@ export const NES = {
   greenMid: '#00a800',
   greenDark: '#006800',
 
+  // end-of-level scene: staircase blocks, soil floor, castle masonry
+  stairLight: '#fcbcb0',
+  soilLight: '#d08048',
+  soilMid: '#a05828',
+  soilDark: '#6b3410',
+  stairMid: '#a05828',
+  castleBrick: '#a05828',
+  castleMortar: '#d08048',
+
   // underwater (world 2-2)
-  water: '#2038ec',
-  waterDeep: '#1028a8',
+  water: '#2338d2',
+  waterDeep: '#17259a',
   mossLight: '#58d854',
   mossMid: '#00a800',
   mossDark: '#006800',
@@ -39,6 +48,28 @@ export const NES = {
   pipeMid: '#00a800',
   pipeDark: '#006800',
 };
+
+/* The chunky mottled block the game uses for terrain. Shared so the underwater
+   level and the end-of-level floor are the same tile in different colours:
+   L = highlight, M = body, D = shading, K = outline. */
+export const BLOCK_TILE = [
+  'KKKKKKKKKKKKKKKK',
+  'KLLMMMMMMMMMMLLK',
+  'KLMMDDMMMMDDMMLK',
+  'KMMDDDMMMDDDMMMK',
+  'KMMMDMMMMMDMMMMK',
+  'KMMMMMMDMMMMMDMK',
+  'KMMDMMMDDMMMMDMK',
+  'KMMDDMMMMMMMDDMK',
+  'KMMMDMMMMMMMDMMK',
+  'KMMMMMMMDMMMMMMK',
+  'KMDMMMMDDMMMDMMK',
+  'KMDDMMMMMMMMDDMK',
+  'KMMDMMMMMMMMMDMK',
+  'KMMMMMMMMMMMMMMK',
+  'KDDMMMMMMMMMMDDK',
+  'KKKKKKKKKKKKKKKK',
+];
 
 export function sprite(rows, palette) {
   const w = rows[0].length;

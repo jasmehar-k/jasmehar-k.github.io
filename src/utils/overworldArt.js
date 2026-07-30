@@ -1,5 +1,5 @@
 // World 1-1 tiles, drawn to match the NES original.
-import { sprite, NES } from './pixelSprite.js';
+import { sprite, NES, BLOCK_TILE } from './pixelSprite.js';
 
 /* Floor block: light top-left edge, black right and bottom so tiling reads as
    a grid of separate blocks, with the speckle pattern from the game. */
@@ -107,7 +107,85 @@ const CLOUD = [
   '.BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB.',
 ];
 
+/* Solid stair block. Light band across the top and down the left, black band
+   across the bottom and down the right — and crucially the two bands meet on a
+   diagonal at the top-right and bottom-left corners. That mitre is what makes
+   the X-shaped seams where four blocks meet in the game. */
+const STAIR = [
+  'LLLLLLLLLLLLLLLK',
+  'LLLLLLLLLLLLLLKK',
+  'LLLLLLLLLLLLLKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLMMMMMMMMMMKKK',
+  'LLLKKKKKKKKKKKKK',
+  'LLKKKKKKKKKKKKKK',
+  'LKKKKKKKKKKKKKKK',
+];
+
+/* Flagpole pennant: white triangle pointing at the pole, green skull on it */
+const FLAG = [
+  '..............WWWW',
+  '............WWWWWW',
+  '..........WWWWWWWW',
+  '........WWWWWWWWWW',
+  '......WWWWWGGGWWWW',
+  '....WWWWWWGGGGGWWW',
+  '..WWWWWWWWGWGWGWWW',
+  '..WWWWWWWWGGGGGWWW',
+  '....WWWWWWWGGGWWWW',
+  '......WWWWWGWGWWWW',
+  '........WWWWWWWWWW',
+  '..........WWWWWWWW',
+  '............WWWWWW',
+  '..............WWWW',
+];
+
+/* Castle masonry: staggered courses picked out in a lighter mortar */
+const CASTLE_BRICK = [
+  'LLLLLLLLLLLLLLLL',
+  'MMMMMMMLMMMMMMML',
+  'MMMMMMMLMMMMMMML',
+  'MMMMMMMLMMMMMMML',
+  'LLLLLLLLLLLLLLLL',
+  'MMMLMMMMMMMLMMMM',
+  'MMMLMMMMMMMLMMMM',
+  'MMMLMMMMMMMLMMMM',
+  'LLLLLLLLLLLLLLLL',
+  'MMMMMMMLMMMMMMML',
+  'MMMMMMMLMMMMMMML',
+  'MMMMMMMLMMMMMMML',
+  'LLLLLLLLLLLLLLLL',
+  'MMMLMMMMMMMLMMMM',
+  'MMMLMMMMMMMLMMMM',
+  'MMMLMMMMMMMLMMMM',
+];
+
 export const overworld = {
+  stair: sprite(STAIR, {
+    L: NES.stairLight,
+    M: NES.stairMid,
+    K: NES.black,
+  }),
+  // same tile as the underwater level's floor, in browns
+  soil: sprite(BLOCK_TILE, {
+    L: NES.soilLight,
+    M: NES.soilMid,
+    D: NES.soilDark,
+    K: NES.black,
+  }),
+  flag: sprite(FLAG, { W: NES.white, G: NES.greenMid }),
+  castleBrick: sprite(CASTLE_BRICK, {
+    L: NES.castleMortar,
+    M: NES.castleBrick,
+  }),
   ground: sprite(GROUND, {
     L: NES.groundLight,
     M: NES.groundMid,

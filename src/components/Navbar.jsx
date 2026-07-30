@@ -12,10 +12,10 @@ import { NES } from '../utils/pixelSprite';
 // instead of sitting on the page as a black slab.
 const WORLDS = [
   { id: 'hero', world: '1-1', bg: NES.sky },
-  { id: 'about', world: '1-2', bg: '#3b9aff' },
-  { id: 'experience', world: '1-3', bg: '#3b9aff' },
+  { id: 'about', world: '1-2', bg: NES.sky },
+  { id: 'experience', world: '1-3', bg: NES.sky },
   { id: 'projects', world: '2-2', bg: NES.water },
-  { id: 'skills', world: '1-4', bg: '#3b9aff' },
+  { id: 'skills', world: '1-4', bg: NES.sky },
 ];
 
 const START_TIME = 400;
