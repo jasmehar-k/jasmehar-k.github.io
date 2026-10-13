@@ -330,7 +330,7 @@ const ExperienceData = [
     company: 'Amazon Web Services',
     duration: 'Sep 2026 - Dec 2026',
     description: [
-      'Joining the Aurora open source control plane team as a Software Development Engineer Intern.',
+      'Working on Global Databases in the Amazon Aurora open source control plane.',
     ],
     align: 'left',
   },
@@ -398,7 +398,6 @@ const ExperienceCard = ({ exp }) => {
 
   return (
     <Card>
-      {exp.upcoming && <IncomingTag>INCOMING</IncomingTag>}
       <JobTitle>{exp.title}</JobTitle>
       <Company>{exp.company}</Company>
       <Duration>{exp.duration}</Duration>
